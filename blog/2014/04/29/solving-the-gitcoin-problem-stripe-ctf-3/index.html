@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Lajos Gerecs</title>
+  <title>Solving the Gitcoin Problem – Stripe CTF 3 - Lajos Gerecs</title>
   <meta name="author" content="Lajos Gerecs">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://luos.github.io">
+  <link rel="canonical" href="http://luos.github.io/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Lajos Gerecs" type="application/atom+xml">
@@ -63,15 +63,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3/">Solving the Gitcoin Problem – Stripe CTF 3</a></h1>
+      <h1 class="entry-title">Solving the Gitcoin Problem – Stripe CTF 3</h1>
     
     
       <p class="meta">
@@ -94,7 +91,7 @@
   </header>
 
 
-  <div class="entry-content"><p>In this  problem we had to write a gitcoin miner or somehow make the bash miner better.</p>
+<div class="entry-content"><p>In this  problem we had to write a gitcoin miner or somehow make the bash miner better.</p>
 
 <p>First I thought it would be good to use Scala/Akka to pass the Tasks around. My plan was to fill up an Actor system and let it handle the hashing using the sys.process package and some commands from the supplied bash example. For some reason it was a complete fail, the Actor got full and used up all my memory and never done anything, in the end I had to shoot this idea (and the process too :) ). (It could be configured to act as a mailbox, to block until not full but it was too much PITA in my opinion. )</p>
 
@@ -204,18 +201,57 @@
 
 <p>In the end I committed by hand because there was some trouble with the endline character and sometimes it was needed at the end of the commit, sometimes not. Strange.</p>
 </div>
+
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Lajos Gerecs</span></span>
+
+      
+
+
+
+
+
+
+
+
   
 
 
-    </article>
+<time datetime="2014-04-29T17:45:54+02:00" pubdate data-updated="true">2014. 04. 29.</time>
+      
+
+<span class="categories">
   
-  <div class="pagination">
+    <a class='category' href='/blog/categories/en/'>en</a>, <a class='category' href='/blog/categories/scala/'>scala</a>
+  
+</span>
+
+
+    </p>
     
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://luos.github.io/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3/" data-via="" data-counturl="http://luos.github.io/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3/" >Tweet</a>
+  
+  
+  
 </div>
+
+    
+    <p class="meta">
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
 <aside class="sidebar">
   
     <section>
@@ -232,7 +268,7 @@
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/luos">@luos</a> on GitHub
@@ -264,6 +300,7 @@
 
   
 </aside>
+
 
     </div>
   </div>

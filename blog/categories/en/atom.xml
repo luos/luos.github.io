@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: en | Lajos Gerecs]]></title>
+  <link href="http://luos.github.io/blog/categories/en/atom.xml" rel="self"/>
+  <link href="http://luos.github.io/"/>
+  <updated>2014-04-30T19:45:53+02:00</updated>
+  <id>http://luos.github.io/</id>
+  <author>
+    <name><![CDATA[Lajos Gerecs]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Solving the Gitcoin Problem – Stripe CTF 3]]></title>
+    <link href="http://luos.github.io/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3/"/>
+    <updated>2014-04-29T17:45:54+02:00</updated>
+    <id>http://luos.github.io/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3</id>
+    <content type="html"><![CDATA[<p>In this  problem we had to write a gitcoin miner or somehow make the bash miner better.</p>
+
+<p>First I thought it would be good to use Scala/Akka to pass the Tasks around. My plan was to fill up an Actor system and let it handle the hashing using the sys.process package and some commands from the supplied bash example. For some reason it was a complete fail, the Actor got full and used up all my memory and never done anything, in the end I had to shoot this idea (and the process too :) ). (It could be configured to act as a mailbox, to block until not full but it was too much PITA in my opinion. )</p>
+
+<p>After this I tried a simple parallel for and calling</p>
+
+<p><code>scala
+git hash-object -t commit --stdin -w &lt;&lt;&lt; commit-body
+</code></p>
+
+<p>this never used more than a couple of percent CPU, I don’t know why, maybe git locks the files in the repo?</p>
+
+<p>After this I got the idea to rewrite the git hash-object part in scala, and in the end it worked out.</p>
+
+<p>If we visit the git objects documentation we can see that a commit contains 5 things:</p>
+
+<p><code>scala
+tree d8329fc1cc938780ffdd9f94e0d364e0ea74f579
+parent some-hash
+author Scott Chacon &lt;schacon@gmail.com&gt; 1243040974 -0700
+committer Scott Chacon &lt;schacon@gmail.com&gt; 1243040974 -0700
+first commit (some description)
+</code></p>
+
+<p>The first value is the tree, we can obtain this with “git write-tree”. The second value is the parent of the commit, we can obtain this with “git rev-parse HEAD”. The other things in this were just placeholders and the goal was to change the last part of the commit to get a hash with git hash-object which is lower than “000001xxxxxxxxxxxxxxxx…”. This means that the hash must be lower than the string “000001″. This is difficult because the only way to obtain the correct info to get the needed hash to try as many hash as we could in the shortest time possible.</p>
+
+<p>Now we know whats needed by the git hash-object function, we have to know what is the format used to calculate the hash. Turns out git prepends a “commit (body-length)\0″ string to the commit body, so thats what we have to do and we are good to go.</p>
+
+<p>My code looked something like this:</p>
+
+<p>``` scala</p>
+
+<p>tree = Seq(&ldquo;git&rdquo;,&ldquo;write-tree&rdquo;).!!.trim
+ parent = Seq(&ldquo;git&rdquo;,&ldquo;rev-parse&rdquo;,&ldquo;HEAD&rdquo;).!!.trim
+val bode = s"tree ${tree}\n" +
+s"parent ${parent}\n" +
+s"author CTF user <a href="&#109;&#x61;&#105;&#x6c;&#116;&#x6f;&#x3a;&#x6d;&#101;&#64;&#x65;&#x78;&#97;&#x6d;&#112;&#x6c;&#x65;&#46;&#x63;&#x6f;&#109;">&#x6d;&#101;&#64;&#101;&#120;&#97;&#x6d;&#112;&#x6c;&#x65;&#46;&#x63;&#x6f;&#x6d;</a> ${now} +0000\n" +
+&ldquo;&rdquo;&ldquo;committer CTF user <a href="&#x6d;&#97;&#105;&#108;&#116;&#111;&#x3a;&#x6d;&#x65;&#64;&#x65;&#120;&#97;&#109;&#x70;&#x6c;&#101;&#x2e;&#x63;&#x6f;&#x6d;">&#x6d;&#x65;&#64;&#x65;&#120;&#x61;&#109;&#x70;&#x6c;&#x65;&#46;&#x63;&#111;&#x6d;</a> 1390941203 +0000
+Give me a Gitcoin
+&rdquo;&ldquo;&rdquo;
+var eq = 0
+val max = 100000000
+   for( i &lt;&ndash; (0 to max).par) {</p>
+
+<pre><code>   val cbode = bode + i+"\n"
+   val fullbode = "commit "+cbode.length+"\0" + cbode
+   val hash = digest(fullbode).reverse.padTo(40,"0").reverse.mkString
+
+   if (hash &lt; difficulty){
+      println("-----------------------")
+      println(fullbode)
+      println("-----------------------")
+      val cmd = "git hash-object -t commit --stdin -w &lt;&lt;&lt; \""+cbode.trim()+"\";git reset --hard \""+hash+"\" &lt; /dev/null; git push origin master;"
+      println(cmd)
+      println("-----------------------")
+      println("HASH: "+hash)
+      println(" GITHASH: "+ commitHash(cbode))
+      //System.exit(0)
+  }
+</code></pre>
+
+<p> }</p>
+
+<p>```</p>
+
+<p>I imported the scala.sys.process._ methods/packages to easily run commands. You can see the syntax in the first couple of rows. After assembling the body of the commit I started a parallel for to use my all my CPU cores ( 2. gen mobile core i5).</p>
+
+<p>Timing my miner, hashing 100000000 commits:</p>
+
+<p><code>
+../scala-2.10.3/bin/scala ../Scalaminer.scala
+1344,73s user 20,31s system 355% cpu 6:23,53 total
+</code></p>
+
+<p>Turns out its approximately 261 kHash/sec.  I don’t know if it counts as fast, it was enough to get a winner commit.</p>
+
+<p>Here is the gist of the code with the remnants of previous tries: <a href="https://gist.github.com/luos/f2c8098be3ef0e49cee9">https://gist.github.com/luos/f2c8098be3ef0e49cee9</a></p>
+
+<p>In the end I committed by hand because there was some trouble with the endline character and sometimes it was needed at the end of the commit, sometimes not. Strange.</p>
+]]></content>
+  </entry>
+  
+</feed>
