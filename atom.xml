@@ -4,7 +4,7 @@
   <title><![CDATA[[Lajos Gerecs:~]]]></title>
   <link href="http://luos.github.io/atom.xml" rel="self"/>
   <link href="http://luos.github.io/"/>
-  <updated>2014-04-30T22:34:37+02:00</updated>
+  <updated>2014-08-22T21:42:41+02:00</updated>
   <id>http://luos.github.io/</id>
   <author>
     <name><![CDATA[Lajos Gerecs]]></name>
@@ -12,6 +12,127 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Trying out ember.js]]></title>
+    <link href="http://luos.github.io/blog/2014/08/22/trying-out-ember-dot-js/"/>
+    <updated>2014-08-22T21:01:06+02:00</updated>
+    <id>http://luos.github.io/blog/2014/08/22/trying-out-ember-dot-js</id>
+    <content type="html"><![CDATA[<p>I wanted to build an editor for one of my sites where users can edit texts, add, sort, and edit pictures, add embedded content and I did not wanted to use a WYSIWYG editor because this would be user created content and currently they only can input markdown or upload one picture.</p>
+
+<h3>The tutorial video is good</h3>
+
+<p>My first video which was my introduction to ember is really good. You can find it on the emberjs official  site among the other guides but here it is:</p>
+
+<iframe width="100%" height="500px" src="//www.youtube.com/embed/1QHrlFlaXdI" frameborder="0" allowfullscreen></iframe>
+
+
+<p>I found this answers all my immdiate questions about ember.js, was not too slow so I did not felt that it would be better if it would be written down and because it has some weird things.</p>
+
+<p>There was some things which were not really immediately obvious, forgive me if there are easier mode to do these.</p>
+
+<h3>Wrapping the models in Ember objects:</h3>
+
+<p>If you have a model array and want that the views automatically change   you change a property on some of the element of the array, then you have to wrap the individual objects. This is easily achieavable like this in your controler&rsquo;s model function:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="k">return</span> <span class="p">[{</span><span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;hello&quot;</span><span class="p">},</span> <span class="p">{</span><span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;world&quot;</span><span class="p">}].</span><span class="nx">map</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span><span class="nx">elem</span><span class="p">){</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">Ember</span><span class="p">.</span><span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">elem</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Accessing controller model data</h3>
+
+<p>It was not obvious how I can access the actual model of the data but it is fairly simple:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">In</span> <span class="nx">your</span> <span class="nx">controller</span> <span class="nx">you</span> <span class="nx">can</span> <span class="nx">call</span><span class="o">:</span>
+</span><span class='line'><span class="k">this</span><span class="p">.</span><span class="nx">currentModel</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Rendering partial views based on model property</h3>
+
+<p>The templates don&rsquo;t  really have ifs. I always think about ifs pollute the view code or not. Ember.js creators decided that it pollutes so you can&rsquo;t easily create an if. If you want to render different template for different models then it is a problem. Fortunately this is easily solvable like this</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">In</span> <span class="nx">the</span> <span class="nx">controller</span><span class="o">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">model</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">[{</span> <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;hello&quot;</span><span class="p">},</span> <span class="p">{</span><span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;world&quot;</span><span class="p">}].</span><span class="nx">map</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span><span class="nx">elem</span><span class="p">){</span>
+</span><span class='line'>                <span class="nx">elem</span><span class="p">.</span><span class="nx">element_template</span> <span class="o">=</span> <span class="s2">&quot;the-name-of-the-template&quot;</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="nx">In</span> <span class="nx">the</span> <span class="nx">template</span><span class="o">:</span>
+</span><span class='line'><span class="p">{{</span><span class="err">#</span><span class="nx">each</span><span class="p">}}</span>
+</span><span class='line'>    <span class="p">{{</span><span class="nx">partial</span> <span class="nx">element_template</span><span class="p">}}</span>
+</span><span class='line'><span class="p">{{</span><span class="err">/each}}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;text/x-handlebars&quot;</span> <span class="nx">data</span><span class="o">-</span><span class="nx">template</span><span class="o">-</span><span class="nx">name</span><span class="o">=</span><span class="s2">&quot;the-name-of-the-template&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>        <span class="p">{{</span><span class="nx">title</span><span class="p">}}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Whats the difference between route and controller</h3>
+
+<p>As it seems to me, there are no real differences between a Route and a Controller. Even something&rsquo;s functions called as ArrayController can simply be implemented in a Route.</p>
+
+<h3>Calling actions with parameters</h3>
+
+<p>This is fairly easy, I don&rsquo;t know now why I felt that this needs to be included in my list:</p>
+
+<p>Define actions in your controller:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="nx">action</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">doSomething</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">param</span><span class="p">,</span><span class="nx">param2</span><span class="p">){</span>
+</span><span class='line'>                <span class="nx">alert</span><span class="p">(</span><span class="nx">param</span><span class="p">);</span>
+</span><span class='line'>                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">param2</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can pass params easily to the <code>action</code> helper, separated by spaces:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="p">{{</span><span class="nx">action</span> <span class="nx">doSomething</span> <span class="s2">&quot;hello World&quot;</span> <span class="s2">&quot;hello console&quot;</span><span class="p">}}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Solving the Gitcoin Problem – Stripe CTF 3]]></title>
