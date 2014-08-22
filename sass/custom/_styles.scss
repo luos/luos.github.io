@@ -22,3 +22,11 @@ header h1.entry-title{
 .blog-index h1.entry-title a{
 	font-size:0.5em;
 }
+
+body>nav{
+    background: #ccc;
+}
+
+.main-navigation li a:hover{
+    font-weight:bold;
+}
