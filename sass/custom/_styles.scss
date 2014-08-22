@@ -1,0 +1,24 @@
+// This File is imported last, and will override other styles in the cascade
+// Add styles here to make changes without digging in too much
+
+
+header h1.entry-title{
+	font-size:1.3em;
+}
+
+.hentry header{
+	margin-bottom:10px;
+	padding-bottom:5px;
+}
+
+#content .blog-index article header{
+	margin-bottom:10px;
+	padding-bottom:5px;
+}
+
+.blog-index h1.entry-title {
+	font-size:1.3em;
+}
+.blog-index h1.entry-title a{
+	font-size:0.5em;
+}
