@@ -7,15 +7,13 @@ categories:
 ---
 
 
-Trying out ember js
-
 I wanted to build an editor for one of my sites where users can edit texts, add, sort, and edit pictures, add embedded content and I did not wanted to use a WYSIWYG editor because this would be user created content and currently they only can input markdown or upload one picture. 
 
 ### The tutorial video is good
 
 My first video which was my introduction to ember is really good. You can find it on the emberjs official  site among the other guides but here it is: 
 
-<iframe width="560" height="315" src="//www.youtube.com/embed/1QHrlFlaXdI" frameborder="0" allowfullscreen></iframe>
+<iframe width="100%" height="500px" src="//www.youtube.com/embed/1QHrlFlaXdI" frameborder="0" allowfullscreen></iframe>
 
 I found this answers all my immdiate questions about ember.js, was not too slow so I did not felt that it would be better if it would be written down and because it has some weird things. 
 
@@ -42,13 +40,69 @@ It was not obvious how I can access the actual model of the data but it is fairl
 
 ```
 
+### Rendering partial views based on model property
+
+The templates don't  really have ifs. I always think about ifs pollute the view code or not. Ember.js creators decided that it pollutes so you can't easily create an if. If you want to render different template for different models then it is a problem. Fortunately this is easily solvable like this
+
+
+{% raw %}
+``` javascript
+
+In the controller:
+
+    model: function(){
+        return [{ title: "hello"}, {title: "world"}].map( function(elem){
+                elem.element_template = "the-name-of-the-template"
+        });
+    }
+
+
+In the template:
+{{#each}}
+    {{partial element_template}}
+{{/each}}
+
+
+<script type="text/x-handlebars" data-template-name="the-name-of-the-template">
+        {{title}}
+</script>
+
+```
+{% endraw %}
 
 ### Whats the difference between route and controller
 
+As it seems to me, there are no real differences between a Route and a Controller. Even something's functions called as ArrayController can simply be implemented in a Route. 
 
-Calling actions with parameters
+### Calling actions with parameters
+
+This is fairly easy, I don't know now why I felt that this needs to be included in my list:
+
+Define actions in your controller:
+
+{% raw %}
+``` javascript
+
+    action: { 
+        doSomething: function(param,param2){
+                alert(param);
+                console.log(param2)
+        }
+    }
+
+```
+
+{% endraw %}
+
+You can pass params easily to the `action` helper, separated by spaces:
+
+{% raw %}
+``` javascript
+
+    {{action doSomething "hello World" "hello console"}}
+
+```
+{% endraw %}
 
 
-
-Rendering partial views based on model prop
 
