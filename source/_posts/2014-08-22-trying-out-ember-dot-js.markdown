@@ -17,11 +17,11 @@ My first video which was my introduction to ember is really good. You can find i
 
 I found this answers all my immdiate questions about ember.js, was not too slow so I did not felt that it would be better if it would be written down and because it has some weird things. 
 
-There was some things which were not really immediately obvious, forgive me if there are easier mode to do these. 
+There was some things which were not really immediately obvious, forgive me if there are easier ways to do these. 
 
 ### Wrapping the models in Ember objects:
 
-If you have a model array and want that the views automatically change   you change a property on some of the element of the array, then you have to wrap the individual objects. This is easily achieavable like this in your controler's model function:
+If you have a model array and want that the views automatically refresh as  you change a property on some of the element of the array, then you have to wrap the individual objects. This is easily achieavable like this in your controler's model function:
 
 ``` javascript
 return [{title: "hello"}, {title: "world"}].map( function(elem){
@@ -32,17 +32,16 @@ return [{title: "hello"}, {title: "world"}].map( function(elem){
 
 ### Accessing controller model data
 
-It was not obvious how I can access the actual model of the data but it is fairly simple:
+It was not obvious how I can access the actual model of the data but it is fairly simple. In your controller you can use the property `currentModel`:
 
 ``` javascript
-    In your controller you can call:
     this.currentModel
 
 ```
 
 ### Rendering partial views based on model property
 
-The templates don't  really have ifs. I always think about ifs pollute the view code or not. Ember.js creators decided that it pollutes so you can't easily create an if. If you want to render different template for different models then it is a problem. Fortunately this is easily solvable like this
+The templates don't  really have ifs. I always think about ifs pollute the view code or not. Ember.js creators decided that it pollutes. If you want to render different template for different models then this is a problem. Fortunately this is easily solvable like this:
 
 
 {% raw %}
@@ -72,7 +71,7 @@ In the template:
 
 ### Whats the difference between route and controller
 
-As it seems to me, there are no real differences between a Route and a Controller. Even something's functions called as ArrayController can simply be implemented in a Route. 
+As it seems to me, there are no real differences between a Route and a Controller. Even something's functions called  ArrayController can simply be implemented in a Route. 
 
 ### Calling actions with parameters
 
@@ -94,7 +93,7 @@ Define actions in your controller:
 
 {% endraw %}
 
-You can pass params easily to the `action` helper, separated by spaces:
+You can pass params to the `action` helper, separated by spaces:
 
 {% raw %}
 ``` javascript
