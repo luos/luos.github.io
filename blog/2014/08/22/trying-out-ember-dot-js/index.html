@@ -116,11 +116,11 @@
 
 <p>I found this answers all my immdiate questions about ember.js, was not too slow so I did not felt that it would be better if it would be written down and because it has some weird things.</p>
 
-<p>There was some things which were not really immediately obvious, forgive me if there are easier mode to do these.</p>
+<p>There was some things which were not really immediately obvious, forgive me if there are easier ways to do these.</p>
 
 <h3>Wrapping the models in Ember objects:</h3>
 
-<p>If you have a model array and want that the views automatically change   you change a property on some of the element of the array, then you have to wrap the individual objects. This is easily achieavable like this in your controler&rsquo;s model function:</p>
+<p>If you have a model array and want that the views automatically refresh as  you change a property on some of the element of the array, then you have to wrap the individual objects. This is easily achieavable like this in your controler&rsquo;s model function:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -133,18 +133,16 @@
 
 <h3>Accessing controller model data</h3>
 
-<p>It was not obvious how I can access the actual model of the data but it is fairly simple:</p>
+<p>It was not obvious how I can access the actual model of the data but it is fairly simple. In your controller you can use the property <code>currentModel</code>:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">In</span> <span class="nx">your</span> <span class="nx">controller</span> <span class="nx">you</span> <span class="nx">can</span> <span class="nx">call</span><span class="o">:</span>
-</span><span class='line'><span class="k">this</span><span class="p">.</span><span class="nx">currentModel</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="k">this</span><span class="p">.</span><span class="nx">currentModel</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
 <h3>Rendering partial views based on model property</h3>
 
-<p>The templates don&rsquo;t  really have ifs. I always think about ifs pollute the view code or not. Ember.js creators decided that it pollutes so you can&rsquo;t easily create an if. If you want to render different template for different models then it is a problem. Fortunately this is easily solvable like this</p>
+<p>The templates don&rsquo;t  really have ifs. I always think about ifs pollute the view code or not. Ember.js creators decided that it pollutes. If you want to render different template for different models then this is a problem. Fortunately this is easily solvable like this:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -187,7 +185,7 @@
 
 <h3>Whats the difference between route and controller</h3>
 
-<p>As it seems to me, there are no real differences between a Route and a Controller. Even something&rsquo;s functions called as ArrayController can simply be implemented in a Route.</p>
+<p>As it seems to me, there are no real differences between a Route and a Controller. Even something&rsquo;s functions called  ArrayController can simply be implemented in a Route.</p>
 
 <h3>Calling actions with parameters</h3>
 
@@ -210,7 +208,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>You can pass params easily to the <code>action</code> helper, separated by spaces:</p>
+<p>You can pass params to the <code>action</code> helper, separated by spaces:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="p">{{</span><span class="nx">action</span> <span class="nx">doSomething</span> <span class="s2">&quot;hello World&quot;</span> <span class="s2">&quot;hello console&quot;</span><span class="p">}}</span>
