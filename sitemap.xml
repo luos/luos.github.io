@@ -2,30 +2,26 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://luos.github.io/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3/</loc>
-        <lastmod>2014-08-22T21:03:50+02:00</lastmod>
-    </url>
-    <url>
-        <loc>http://luos.github.io/blog/2014/08/22/trying-out-ember-dot-js/</loc>
-        <lastmod>2014-08-22T21:55:09+02:00</lastmod>
+        <lastmod>2014-08-22T20:03:50+01:00</lastmod>
     </url>
     <url>
         <loc>http://luos.github.io/about/</loc>
-        <lastmod>2014-08-22T21:03:50+02:00</lastmod>
+        <lastmod>2014-10-08T14:19:04+01:00</lastmod>
     </url>
     <url>
         <loc>http://luos.github.io/blog/archives/</loc>
-        <lastmod>2014-08-22T21:55:09+02:00</lastmod>
+        <lastmod>2014-08-22T20:03:50+01:00</lastmod>
     </url>
     <url>
         <loc>http://luos.github.io/</loc>
-        <lastmod>2014-08-22T21:55:09+02:00</lastmod>
+        <lastmod>2014-08-22T20:03:50+01:00</lastmod>
     </url>
     <url>
         <loc>http://luos.github.io/projects/</loc>
-        <lastmod>2014-08-22T21:03:50+02:00</lastmod>
+        <lastmod>2014-10-08T13:55:30+01:00</lastmod>
     </url>
     <url>
         <loc>http://luos.github.io/robots.txt</loc>
-        <lastmod>2014-08-22T21:03:50+02:00</lastmod>
+        <lastmod>2014-08-22T20:03:50+01:00</lastmod>
     </url>
 </urlset>
