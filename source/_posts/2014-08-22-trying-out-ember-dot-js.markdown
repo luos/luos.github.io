@@ -4,10 +4,12 @@ title: "Trying out ember.js"
 date: 2014-08-22 21:01:06 +0200
 comments: true
 categories: 
+draft: true
+published: false
 ---
 
 
-I wanted to build an editor for one of my sites where users can edit texts, add, sort, and edit pictures, add embedded content and I did not wanted to use a WYSIWYG editor because this would be user created content and currently they only can input markdown or upload one picture. 
+I wanted to build an editor for one of my sites where users can edit texts, add, sort, and edit pictures, add embedded content and I did not wanted to use a WYSIWYG editor because this would be user created content and currently they only can input markdown or upload one picture.  
 
 ### The tutorial video is good
 

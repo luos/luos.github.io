@@ -7,6 +7,14 @@ sharing: true
 footer: true
 ---
 
-My name is Lajos Gerecs. Currently I live in Hungary.
+My name is Lajos Gerecs. I currently live in London, UK. 
+
+I am a webdeveloper. In the past years I worked with several technolgies and framework.
+
+My most used languages are PHP and JavaScript. 
+
+On the database side I used MySQL, MSSQL and a few times I had to use PL/SQL too. 
+
+
 
 
