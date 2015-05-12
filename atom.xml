@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[[Lajos Gerecs:~]]]></title>
-  <link href="http://luos.github.io/atom.xml" rel="self"/>
-  <link href="http://luos.github.io/"/>
-  <updated>2015-05-12T21:03:17+01:00</updated>
-  <id>http://luos.github.io/</id>
+  <link href="http://lajos.gerecs.hu/atom.xml" rel="self"/>
+  <link href="http://lajos.gerecs.hu/"/>
+  <updated>2015-05-12T21:05:05+01:00</updated>
+  <id>http://lajos.gerecs.hu/</id>
   <author>
     <name><![CDATA[Lajos Gerecs]]></name>
     
@@ -14,129 +14,10 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Trying out ember.js]]></title>
-    <link href="http://luos.github.io/blog/2014/08/22/trying-out-ember-dot-js/"/>
-    <updated>2014-08-22T20:01:06+01:00</updated>
-    <id>http://luos.github.io/blog/2014/08/22/trying-out-ember-dot-js</id>
-    <content type="html"><![CDATA[<p>I wanted to build an editor for one of my sites where users can edit texts, add, sort, and edit pictures, add embedded content and I did not wanted to use a WYSIWYG editor because this would be user created content and currently they only can input markdown or upload one picture.</p>
-
-<h3>The tutorial video is good</h3>
-
-<p>My first video which was my introduction to ember is really good. You can find it on the emberjs official  site among the other guides but here it is:</p>
-
-<iframe width="100%" height="500px" src="//www.youtube.com/embed/1QHrlFlaXdI" frameborder="0" allowfullscreen></iframe>
-
-
-<p>I found this answers all my immdiate questions about ember.js, was not too slow so I did not felt that it would be better if it would be written down and because it has some weird things.</p>
-
-<p>There was some things which were not really immediately obvious, forgive me if there are easier ways to do these.</p>
-
-<h3>Wrapping the models in Ember objects:</h3>
-
-<p>If you have a model array and want that the views automatically refresh as  you change a property on some of the element of the array, then you have to wrap the individual objects. This is easily achieavable like this in your controler&rsquo;s model function:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="k">return</span> <span class="p">[{</span><span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;hello&quot;</span><span class="p">},</span> <span class="p">{</span><span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;world&quot;</span><span class="p">}].</span><span class="nx">map</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span><span class="nx">elem</span><span class="p">){</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nx">Ember</span><span class="p">.</span><span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">elem</span><span class="p">);</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Accessing controller model data</h3>
-
-<p>It was not obvious how I can access the actual model of the data but it is fairly simple. In your controller you can use the property <code>currentModel</code>:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="k">this</span><span class="p">.</span><span class="nx">currentModel</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Rendering partial views based on model property</h3>
-
-<p>The templates don&rsquo;t  really have ifs. I always think about ifs pollute the view code or not. Ember.js creators decided that it pollutes. If you want to render different template for different models then this is a problem. Fortunately this is easily solvable like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">In</span> <span class="nx">the</span> <span class="nx">controller</span><span class="o">:</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">model</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
-</span><span class='line'>        <span class="k">return</span> <span class="p">[{</span> <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;hello&quot;</span><span class="p">},</span> <span class="p">{</span><span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;world&quot;</span><span class="p">}].</span><span class="nx">map</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span><span class="nx">elem</span><span class="p">){</span>
-</span><span class='line'>                <span class="nx">elem</span><span class="p">.</span><span class="nx">element_template</span> <span class="o">=</span> <span class="s2">&quot;the-name-of-the-template&quot;</span>
-</span><span class='line'>        <span class="p">});</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="nx">In</span> <span class="nx">the</span> <span class="nx">template</span><span class="o">:</span>
-</span><span class='line'><span class="p">{{</span><span class="err">#</span><span class="nx">each</span><span class="p">}}</span>
-</span><span class='line'>    <span class="p">{{</span><span class="nx">partial</span> <span class="nx">element_template</span><span class="p">}}</span>
-</span><span class='line'><span class="p">{{</span><span class="err">/each}}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;text/x-handlebars&quot;</span> <span class="nx">data</span><span class="o">-</span><span class="nx">template</span><span class="o">-</span><span class="nx">name</span><span class="o">=</span><span class="s2">&quot;the-name-of-the-template&quot;</span><span class="o">&gt;</span>
-</span><span class='line'>        <span class="p">{{</span><span class="nx">title</span><span class="p">}}</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Whats the difference between route and controller</h3>
-
-<p>As it seems to me, there are no real differences between a Route and a Controller. Even something&rsquo;s functions called  ArrayController can simply be implemented in a Route.</p>
-
-<h3>Calling actions with parameters</h3>
-
-<p>This is fairly easy, I don&rsquo;t know now why I felt that this needs to be included in my list:</p>
-
-<p>Define actions in your controller:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="nx">action</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">doSomething</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">param</span><span class="p">,</span><span class="nx">param2</span><span class="p">){</span>
-</span><span class='line'>                <span class="nx">alert</span><span class="p">(</span><span class="nx">param</span><span class="p">);</span>
-</span><span class='line'>                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">param2</span><span class="p">)</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>You can pass params to the <code>action</code> helper, separated by spaces:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="p">{{</span><span class="nx">action</span> <span class="nx">doSomething</span> <span class="s2">&quot;hello World&quot;</span> <span class="s2">&quot;hello console&quot;</span><span class="p">}}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-]]></content>
-  </entry>
-  
-  <entry>
     <title type="html"><![CDATA[Solving the Gitcoin Problem – Stripe CTF 3]]></title>
-    <link href="http://luos.github.io/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3/"/>
+    <link href="http://lajos.gerecs.hu/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3/"/>
     <updated>2014-04-29T16:45:54+01:00</updated>
-    <id>http://luos.github.io/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3</id>
+    <id>http://lajos.gerecs.hu/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3</id>
     <content type="html"><![CDATA[<p>In this  problem we had to write a gitcoin miner or somehow make the bash miner better.</p>
 
 <p>First I thought it would be good to use Scala/Akka to pass the Tasks around. My plan was to fill up an Actor system and let it handle the hashing using the sys.process package and some commands from the supplied bash example. For some reason it was a complete fail, the Actor got full and used up all my memory and never done anything, in the end I had to shoot this idea (and the process too :) ). (It could be configured to act as a mailbox, to block until not full but it was too much PITA in my opinion. )</p>
@@ -251,9 +132,9 @@
   
   <entry>
     <title type="html"><![CDATA[Java Set hülyeség]]></title>
-    <link href="http://luos.github.io/blog/2011/10/12/java-set-hulyeseg/"/>
+    <link href="http://lajos.gerecs.hu/blog/2011/10/12/java-set-hulyeseg/"/>
     <updated>2011-10-12T20:17:29+01:00</updated>
-    <id>http://luos.github.io/blog/2011/10/12/java-set-hulyeseg</id>
+    <id>http://lajos.gerecs.hu/blog/2011/10/12/java-set-hulyeseg</id>
     <content type="html"><![CDATA[<p>Csodálatos módon, a Java Set  megvalósításban, ha az ember vizsgálni szeretné, hogy egy elem benne van-e a halmazban, akkor a contains metódus, objektet vár, ami szerintem tök hülyeség, főleg azért mert nem szól, ha véletlen mást ellenőrzök.
 Pl:</p>
 
@@ -276,9 +157,9 @@ Pl:</p>
   
   <entry>
     <title type="html"><![CDATA[Prestashop modulok fejlesztése]]></title>
-    <link href="http://luos.github.io/blog/2011/07/01/prestashop-modulok-fejlesztese/"/>
+    <link href="http://lajos.gerecs.hu/blog/2011/07/01/prestashop-modulok-fejlesztese/"/>
     <updated>2011-07-01T15:00:00+01:00</updated>
-    <id>http://luos.github.io/blog/2011/07/01/prestashop-modulok-fejlesztese</id>
+    <id>http://lajos.gerecs.hu/blog/2011/07/01/prestashop-modulok-fejlesztese</id>
     <content type="html"><![CDATA[<p>Ezt emailben írtam, de azért gondolom valakinek hasznos lehet:</p>
 
 <p>Egy modul írása alapvetően elég egyszerű.
@@ -311,9 +192,9 @@ adni, még 1.3.x-hez fejlesztettem.</p>
   
   <entry>
     <title type="html"><![CDATA[Hogyan számoljuk meg a táblák sorait egy MySQL adatbázisban?]]></title>
-    <link href="http://luos.github.io/blog/2011/04/05/hogyan-szamoljuk-meg-a-tablak-sorait-egy-mysql-adatbazisban/"/>
+    <link href="http://lajos.gerecs.hu/blog/2011/04/05/hogyan-szamoljuk-meg-a-tablak-sorait-egy-mysql-adatbazisban/"/>
     <updated>2011-04-05T12:38:00+01:00</updated>
-    <id>http://luos.github.io/blog/2011/04/05/hogyan-szamoljuk-meg-a-tablak-sorait-egy-mysql-adatbazisban</id>
+    <id>http://lajos.gerecs.hu/blog/2011/04/05/hogyan-szamoljuk-meg-a-tablak-sorait-egy-mysql-adatbazisban</id>
     <content type="html"><![CDATA[<p>Nem tudom, hogy ez a legjobb mód rá, mindenesetre, ha gyorsan kell, működik:</p>
 
 <p>Először is, csináljunk egy lekérdezést:</p>
@@ -342,9 +223,9 @@ adni, még 1.3.x-hez fejlesztettem.</p>
   
   <entry>
     <title type="html"><![CDATA[Hogyan nem tudtam végigvinni a Stripe CTF-et?]]></title>
-    <link href="http://luos.github.io/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et/"/>
+    <link href="http://lajos.gerecs.hu/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et/"/>
     <updated>2011-04-05T12:38:00+01:00</updated>
-    <id>http://luos.github.io/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et</id>
+    <id>http://lajos.gerecs.hu/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et</id>
     <content type="html"><![CDATA[<p>A Stripe CTF egy webes biztonságtechnikai verseny, ahogy már írtam róla<a title="Stripe CTF – első benyomások" href="http://luoska.wordpress.com/2012/08/23/stripe-ctf-elso-benyomasok/"> egyik előző</a> postomban. Nekem nagyon tetszett, még sosem játszottam ilyenen.</p>
 
 <p>Eljutottam az utolsó előtti pályáig, de az teljesen kifogott rajtam.</p>

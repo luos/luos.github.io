@@ -2,50 +2,48 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>
-            http://luos.github.io/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et/
+            http://lajos.gerecs.hu/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et/
         </loc>
         <lastmod>2015-05-12T20:47:26+01:00</lastmod>
     </url>
     <url>
         <loc>
-            http://luos.github.io/blog/2011/04/05/hogyan-szamoljuk-meg-a-tablak-sorait-egy-mysql-adatbazisban/
+            http://lajos.gerecs.hu/blog/2011/04/05/hogyan-szamoljuk-meg-a-tablak-sorait-egy-mysql-adatbazisban/
         </loc>
         <lastmod>2015-05-12T20:47:26+01:00</lastmod>
     </url>
     <url>
-        <loc>http://luos.github.io/blog/2011/07/01/prestashop-modulok-fejlesztese/</loc>
+        <loc>http://lajos.gerecs.hu/blog/2011/07/01/prestashop-modulok-fejlesztese/</loc>
         <lastmod>2015-05-12T20:47:26+01:00</lastmod>
     </url>
     <url>
-        <loc>http://luos.github.io/blog/2011/10/12/java-set-hulyeseg/</loc>
+        <loc>http://lajos.gerecs.hu/blog/2011/10/12/java-set-hulyeseg/</loc>
         <lastmod>2015-05-12T20:47:26+01:00</lastmod>
     </url>
     <url>
-        <loc>http://luos.github.io/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3/</loc>
+        <loc>
+            http://lajos.gerecs.hu/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3/
+        </loc>
         <lastmod>2015-05-12T20:47:26+01:00</lastmod>
     </url>
     <url>
-        <loc>http://luos.github.io/blog/2014/08/22/trying-out-ember-dot-js/</loc>
+        <loc>http://lajos.gerecs.hu/projects/</loc>
         <lastmod>2015-05-12T20:47:26+01:00</lastmod>
     </url>
     <url>
-        <loc>http://luos.github.io/projects/</loc>
+        <loc>http://lajos.gerecs.hu/robots.txt</loc>
         <lastmod>2015-05-12T20:47:26+01:00</lastmod>
     </url>
     <url>
-        <loc>http://luos.github.io/robots.txt</loc>
+        <loc>http://lajos.gerecs.hu/blog/archives/</loc>
         <lastmod>2015-05-12T20:47:26+01:00</lastmod>
     </url>
     <url>
-        <loc>http://luos.github.io/blog/archives/</loc>
+        <loc>http://lajos.gerecs.hu/</loc>
         <lastmod>2015-05-12T20:47:26+01:00</lastmod>
     </url>
     <url>
-        <loc>http://luos.github.io/</loc>
-        <lastmod>2015-05-12T20:47:26+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://luos.github.io/about/</loc>
+        <loc>http://lajos.gerecs.hu/about/</loc>
         <lastmod>2015-05-12T20:47:26+01:00</lastmod>
     </url>
 </urlset>
