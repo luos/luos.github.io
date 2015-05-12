@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: sql | [Lajos Gerecs:~]]]></title>
+  <link href="http://lajos.gerecs.hu/blog/categories/sql/atom.xml" rel="self"/>
+  <link href="http://lajos.gerecs.hu/"/>
+  <updated>2015-05-12T20:46:06+01:00</updated>
+  <id>http://lajos.gerecs.hu/</id>
+  <author>
+    <name><![CDATA[Lajos Gerecs]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Hogyan számoljuk meg a táblák sorait egy MySQL adatbázisban?]]></title>
+    <link href="http://lajos.gerecs.hu/blog/2011/04/05/hogyan-szamoljuk-meg-a-tablak-sorait-egy-mysql-adatbazisban/"/>
+    <updated>2011-04-05T12:38:00+01:00</updated>
+    <id>http://lajos.gerecs.hu/blog/2011/04/05/hogyan-szamoljuk-meg-a-tablak-sorait-egy-mysql-adatbazisban</id>
+    <content type="html"><![CDATA[<p>Nem tudom, hogy ez a legjobb mód rá, mindenesetre, ha gyorsan kell, működik:</p>
+
+<p>Először is, csináljunk egy lekérdezést:</p>
+
+<p>``` sql</p>
+
+<p>SELECT CONCAT( &lsquo; ( SELECT &ldquo;&rsquo;, table_name, &lsquo;&rdquo; as tabla , COUNT(*) as db FROM &rsquo;, table_name, &lsquo;) UNION ALL&rsquo; )
+FROM information_schema.tables
+WHERE table_schema = &lsquo;ADATBAZIS_NEVE&rsquo;
+LIMIT 0 , 300000</p>
+
+<p>```</p>
+
+<p>Majd ha lefuttattuk, kapunk valami ilyesmit:</p>
+
+<p>``` sql</p>
+
+<p>( SELECT &ldquo;kutyuk_access&rdquo; as tabla , COUNT(<em>) as db FROM kutyuk_access) UNION ALL( SELECT &ldquo;kutyuk_accessory&rdquo; as tabla , COUNT(</em>) as db FROM kutyuk_accessory) UNION ALL( SELECT &ldquo;kutyuk_address&rdquo; as tabla , COUNT(<em>) as db FROM kutyuk_address) UNION ALL( SELECT &ldquo;kutyuk_alias&rdquo; as tabla , COUNT(</em>) as db FROM kutyuk_alias) UNION ALL</p>
+
+<p>```</p>
+
+<p>A legutolsó SQL végéről töröljük le az UNION ALL-t, és hogy később tudjuk rendezni mondjuk</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Hogyan számoljuk meg a táblák sorait egy MySQL adatbázisban?]]></title>
+    <link href="http://lajos.gerecs.hu/blog/2011/04/05/hogyan-szamoljuk-meg-a-tablak-sorait-egy-mysql-adatbazisban/"/>
+    <updated>2011-04-05T12:38:00+01:00</updated>
+    <id>http://lajos.gerecs.hu/blog/2011/04/05/hogyan-szamoljuk-meg-a-tablak-sorait-egy-mysql-adatbazisban</id>
+    <content type="html"><![CDATA[<p>Nem tudom, hogy ez a legjobb mód rá, mindenesetre, ha gyorsan kell, működik:</p>
+
+<p>Először is, csináljunk egy lekérdezést:</p>
+
+<p>``` sql</p>
+
+<p>SELECT CONCAT( &lsquo; ( SELECT &ldquo;&rsquo;, table_name, &lsquo;&rdquo; as tabla , COUNT(*) as db FROM &rsquo;, table_name, &lsquo;) UNION ALL&rsquo; )
+FROM information_schema.tables
+WHERE table_schema = &lsquo;ADATBAZIS_NEVE&rsquo;
+LIMIT 0 , 300000</p>
+
+<p>```</p>
+
+<p>Majd ha lefuttattuk, kapunk valami ilyesmit:</p>
+
+<p>``` sql</p>
+
+<p>( SELECT &ldquo;kutyuk_access&rdquo; as tabla , COUNT(<em>) as db FROM kutyuk_access) UNION ALL( SELECT &ldquo;kutyuk_accessory&rdquo; as tabla , COUNT(</em>) as db FROM kutyuk_accessory) UNION ALL( SELECT &ldquo;kutyuk_address&rdquo; as tabla , COUNT(<em>) as db FROM kutyuk_address) UNION ALL( SELECT &ldquo;kutyuk_alias&rdquo; as tabla , COUNT(</em>) as db FROM kutyuk_alias) UNION ALL</p>
+
+<p>```</p>
+
+<p>A legutolsó SQL végéről töröljük le az UNION ALL-t, és hogy később tudjuk rendezni mondjuk</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Hogyan nem tudtam végigvinni a Stripe CTF-et?]]></title>
+    <link href="http://lajos.gerecs.hu/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et/"/>
+    <updated>2011-04-05T12:38:00+01:00</updated>
+    <id>http://lajos.gerecs.hu/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et</id>
+    <content type="html"><![CDATA[<p>Nem tudom, hogy ez a legjobb mód rá, mindenesetre, ha gyorsan kell, működik:</p>
+
+<p>Először is, csináljunk egy lekérdezést:</p>
+
+<p>``` sql</p>
+
+<p>SELECT CONCAT( &lsquo; ( SELECT &ldquo;&rsquo;, table_name, &lsquo;&rdquo; as tabla , COUNT(*) as db FROM &rsquo;, table_name, &lsquo;) UNION ALL&rsquo; )
+FROM information_schema.tables
+WHERE table_schema = &lsquo;ADATBAZIS_NEVE&rsquo;
+LIMIT 0 , 300000</p>
+
+<p>```</p>
+
+<p>Majd ha lefuttattuk, kapunk valami ilyesmit:</p>
+
+<p>``` sql</p>
+
+<p>( SELECT &ldquo;kutyuk_access&rdquo; as tabla , COUNT(<em>) as db FROM kutyuk_access) UNION ALL( SELECT &ldquo;kutyuk_accessory&rdquo; as tabla , COUNT(</em>) as db FROM kutyuk_accessory) UNION ALL( SELECT &ldquo;kutyuk_address&rdquo; as tabla , COUNT(<em>) as db FROM kutyuk_address) UNION ALL( SELECT &ldquo;kutyuk_alias&rdquo; as tabla , COUNT(</em>) as db FROM kutyuk_alias) UNION ALL</p>
+
+<p>```</p>
+
+<p>A legutolsó SQL végéről töröljük le az UNION ALL-t, és hogy később tudjuk rendezni mondjuk</p>
+]]></content>
+  </entry>
+  
+</feed>

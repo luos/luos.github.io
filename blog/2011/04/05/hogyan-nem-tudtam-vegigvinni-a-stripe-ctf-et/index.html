@@ -1,0 +1,286 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Hogyan nem tudtam végigvinni a Stripe CTF-et? - [Lajos Gerecs:~]</title>
+  <meta name="author" content="Lajos Gerecs">
+
+  
+  <meta name="description" content="Nem tudom, hogy ez a legjobb mód rá, mindenesetre, ha gyorsan kell, működik: Először is, csináljunk egy lekérdezést: 1
+2
+3
+4
+SELECT CONCAT( &#39; ( &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://lajos.gerecs.hu/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="[Lajos Gerecs:~]" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-39366654-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">[Lajos Gerecs:~]</a></h1>
+  
+    <h2>% a blog</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:lajos.gerecs.hu" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/about">About me</a></li>
+  <li><a href="/projects">Projects</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Hogyan nem tudtam végigvinni a Stripe CTF-et?</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-05T12:38:00+01:00" pubdate data-updated="true">2011. 04. 05.</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Nem tudom, hogy ez a legjobb mód rá, mindenesetre, ha gyorsan kell, működik:</p>
+
+<p>Először is, csináljunk egy lekérdezést:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="n">CONCAT</span><span class="p">(</span> <span class="s1">&#39; ( SELECT &quot;&#39;</span><span class="p">,</span> <span class="k">table_name</span><span class="p">,</span> <span class="s1">&#39;&quot; as tabla , COUNT(*) as db FROM &#39;</span><span class="p">,</span> <span class="k">table_name</span><span class="p">,</span> <span class="s1">&#39;) UNION ALL&#39;</span> <span class="p">)</span>
+</span><span class='line'><span class="k">FROM</span> <span class="n">information_schema</span><span class="p">.</span><span class="n">tables</span>
+</span><span class='line'><span class="k">WHERE</span> <span class="n">table_schema</span> <span class="o">=</span> <span class="s1">&#39;ADATBAZIS_NEVE&#39;</span>
+</span><span class='line'><span class="k">LIMIT</span> <span class="mi">0</span> <span class="p">,</span> <span class="mi">300000</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Majd ha lefuttattuk, kapunk valami ilyesmit:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="p">(</span> <span class="k">SELECT</span> <span class="ss">&quot;kutyuk_access&quot;</span> <span class="k">as</span> <span class="n">tabla</span> <span class="p">,</span> <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">as</span> <span class="n">db</span> <span class="k">FROM</span> <span class="n">kutyuk_access</span><span class="p">)</span> <span class="k">UNION</span> <span class="k">ALL</span><span class="p">(</span> <span class="k">SELECT</span> <span class="ss">&quot;kutyuk_accessory&quot;</span> <span class="k">as</span> <span class="n">tabla</span> <span class="p">,</span> <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">as</span> <span class="n">db</span> <span class="k">FROM</span> <span class="n">kutyuk_accessory</span><span class="p">)</span> <span class="k">UNION</span> <span class="k">ALL</span><span class="p">(</span> <span class="k">SELECT</span> <span class="ss">&quot;kutyuk_address&quot;</span> <span class="k">as</span> <span class="n">tabla</span> <span class="p">,</span> <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">as</span> <span class="n">db</span> <span class="k">FROM</span> <span class="n">kutyuk_address</span><span class="p">)</span> <span class="k">UNION</span> <span class="k">ALL</span><span class="p">(</span> <span class="k">SELECT</span> <span class="ss">&quot;kutyuk_alias&quot;</span> <span class="k">as</span> <span class="n">tabla</span> <span class="p">,</span> <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">as</span> <span class="n">db</span> <span class="k">FROM</span> <span class="n">kutyuk_alias</span><span class="p">)</span> <span class="k">UNION</span> <span class="k">ALL</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A legutolsó SQL végéről töröljük le az UNION ALL-t, és hogy később tudjuk rendezni mondjuk</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Lajos Gerecs</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-05T12:38:00+01:00" pubdate data-updated="true">2011. 04. 05.</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/sql/'>sql</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://lajos.gerecs.hu/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et/" data-via="" data-counturl="http://lajos.gerecs.hu/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et/" title="Next Post: Hogyan nem tudtam végigvinni a Stripe CTF-et?">Hogyan nem tudtam végigvinni a Stripe CTF-et? &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3/">Solving the Gitcoin Problem – Stripe CTF 3</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/12/java-set-hulyeseg/">Java Set hülyeség</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/07/01/prestashop-modulok-fejlesztese/">Prestashop modulok fejlesztése</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/07/01/prestashop-modulok-fejlesztese/">Prestashop modulok fejlesztése</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/04/05/hogyan-szamoljuk-meg-a-tablak-sorait-egy-mysql-adatbazisban/">Hogyan számoljuk meg a táblák sorait egy MySQL adatbázisban?</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/luos">@luos</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'luos',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Lajos Gerecs -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

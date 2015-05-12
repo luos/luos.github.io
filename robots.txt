@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: 
+
+Sitemap: http://lajos.gerecs.hu/sitemap.xml 
