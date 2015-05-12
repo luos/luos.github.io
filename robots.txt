@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://lajos.gerecs.hu/sitemap.xml 
+Sitemap: http://luos.github.io/sitemap.xml 

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: hu | [Lajos Gerecs:~]]]></title>
-  <link href="http://lajos.gerecs.hu/blog/categories/hu/atom.xml" rel="self"/>
-  <link href="http://lajos.gerecs.hu/"/>
-  <updated>2015-05-12T20:47:42+01:00</updated>
-  <id>http://lajos.gerecs.hu/</id>
+  <link href="http://luos.github.io/blog/categories/hu/atom.xml" rel="self"/>
+  <link href="http://luos.github.io/"/>
+  <updated>2015-05-12T21:02:30+01:00</updated>
+  <id>http://luos.github.io/</id>
   <author>
     <name><![CDATA[Lajos Gerecs]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Java Set hülyeség]]></title>
-    <link href="http://lajos.gerecs.hu/blog/2011/10/12/java-set-hulyeseg/"/>
+    <link href="http://luos.github.io/blog/2011/10/12/java-set-hulyeseg/"/>
     <updated>2011-10-12T20:17:29+01:00</updated>
-    <id>http://lajos.gerecs.hu/blog/2011/10/12/java-set-hulyeseg</id>
+    <id>http://luos.github.io/blog/2011/10/12/java-set-hulyeseg</id>
     <content type="html"><![CDATA[<p>Csodálatos módon, a Java Set  megvalósításban, ha az ember vizsgálni szeretné, hogy egy elem benne van-e a halmazban, akkor a contains metódus, objektet vár, ami szerintem tök hülyeség, főleg azért mert nem szól, ha véletlen mást ellenőrzök.
 Pl:</p>
 
@@ -30,41 +30,6 @@ if ( ! votma.contains(n) )
 </code></p>
 
 <p>Ez simán lefordul, ami csak azért baj, mert nem vettem észre, hogy hülyeséget írtam aztán egy óráig kerestem a hibát. Másfelől viszont érthető, hisz bármilyen objektumot meg kell tudni vizsgálni, hogy benne van-e a halmazban, viszont tudható, hogy egy olyan objektum tuti nincs a halmazban, ami nem is lehet benne.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Prestashop modulok fejlesztése]]></title>
-    <link href="http://lajos.gerecs.hu/blog/2011/07/01/prestashop-modulok-fejlesztese/"/>
-    <updated>2011-07-01T15:00:00+01:00</updated>
-    <id>http://lajos.gerecs.hu/blog/2011/07/01/prestashop-modulok-fejlesztese</id>
-    <content type="html"><![CDATA[<p>Ezt emailben írtam, de azért gondolom valakinek hasznos lehet:</p>
-
-<p>Egy modul írása alapvetően elég egyszerű.
-A prestashop biztosít úgynevezett hook-okat, melyek igazából
-események, és meghívódnak akkor, amikor történik valami:
-<a href="http://www.daveegerton.com/prestashop-guides/Prestashop-Designers-Guide/core-modules-structure/hooks.html">http://www.daveegerton.com/prestashop-guides/Prestashop-Designers-Guide/core-modules-structure/hooks.html</a>
-Ezekre a hookokra fel lehet iratkozni, így a te kódod is lefut akkor,
-amikor az esemény megtörténik.
-Az új verziót annyira én se vágom, de ott már van valami trükközés a
-modulinstallációnál xml fájlokkal.
-Nagyjából ennyi a történet. Létrehozol egy mappát a modules mappában,
-bele egy ugyanolyan nevű phpt és classt és kész a modul.
-Az install metódusban feliratkozol ezekre a hookokra, majd az
-adminfelületen felinstallálod és bekapcsolod(!) a modult.
-Legegyszerűbb ezt kilesni egy már ottlévő modulból. A többi része a
-fejlesztésnek tiszta php,  néha a prestashop Database vagy hasonló
-classjait felhasználva.</p>
-
-<p>Ha valami új doboz vagy ilyesmi kellett az admin felületre, akkor én
-azt csak úgy tudtam megoldani, hogy belepiszkálok a viewba. Szerintem
-erre nem nagyon van más megoldás.</p>
-
-<p><a href="http://www.daveegerton.com/prestashop-guides.html">http://www.daveegerton.com/prestashop-guides.html</a></p>
-
-<p>Az egész nem valami bonyolult. :)
-Sajna én már rég csináltam ezt, így konkrétabb linkeket nem tudok
-adni, még 1.3.x-hez fejlesztettem.</p>
 ]]></content>
   </entry>
   
