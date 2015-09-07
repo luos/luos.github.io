@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ctf | [Lajos Gerecs:~]]]></title>
+  <link href="http://luos.github.io/blog/categories/ctf/atom.xml" rel="self"/>
+  <link href="http://luos.github.io/"/>
+  <updated>2015-09-07T21:41:04+02:00</updated>
+  <id>http://luos.github.io/</id>
+  <author>
+    <name><![CDATA[Lajos Gerecs]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Hogyan nem tudtam végigvinni a Stripe CTF-et?]]></title>
+    <link href="http://luos.github.io/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et/"/>
+    <updated>2011-04-05T13:38:00+02:00</updated>
+    <id>http://luos.github.io/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et</id>
+    <content type="html"><![CDATA[<p>A Stripe CTF egy webes biztonságtechnikai verseny, ahogy már írtam róla<a title="Stripe CTF – első benyomások" href="http://luoska.wordpress.com/2012/08/23/stripe-ctf-elso-benyomasok/"> egyik előző</a> postomban. Nekem nagyon tetszett, még sosem játszottam ilyenen.</p>
+
+<p>Eljutottam az utolsó előtti pályáig, de az teljesen kifogott rajtam.</p>
+
+<p>Nézegettem a kódot, de sehogy sem sikerült rájönnöm, hogy mi a hiba. Persze arra rájöttem, hogy részben ezt a kódot kell kihasználni:</p>
+
+<p>``` python</p>
+
+<p>def parse_params(raw_params):
+   pairs = raw_params.split(&lsquo;&amp;&rsquo;)
+   params = {}
+   for pair in pairs:</p>
+
+<pre><code> key, val = pair.split('=')
+ key = urllib.unquote_plus(key)
+ val = urllib.unquote_plus(val)
+ params[key] = val
+</code></pre>
+
+<p> return params</p>
+
+<p>```</p>
+
+<p>Elég nyilvánvaló volt, hogy az POST request bodyját úgy kell majd módosítani, hogy a hátul lévő paraméterek felülírják az elől lévőket, így tulajdonképpen valahogy túl kéne járni a hash ellenőrző eszén. Ezt jól is gondoltam, de ezen kívül itt el is akadtam. Fel kellett mennem az IRC-re, hogy megkérdezzem, mégis mi a halált kéne csinálnom (note: itt már kb 2 napja nézegettem a kódot). Annyit mondtak kb, hogy &ldquo;the hashing has some security vulnerabilities. Nah hát ez sem sokat segített, úgyhogy rákerestem a googleban, hogy mi ennek a feladatnak a megoldása.
+Hát nem csodálom, hogy nem tudtam megoldani, de legalább egy olyan dolgot tanultam, amit egy átlagember nem nagyon tud, legalábbis szerintem. Érdekes, hogy egy félév kódolástechnika után semmit sem tudtam arról, hogy a valóságban hogyan működnek a hash függvények.</p>
+
+<p>A hiba ebben a kódrészletben volt:</p>
+
+<p>``` python</p>
+
+<p>secret = str(row[&lsquo;secret&rsquo;])</p>
+
+<p>h = hashlib.sha1()
+ h.update(secret + raw_params)
+ print &lsquo;computed signature&rsquo;, h.hexdigest(), &lsquo;for body&rsquo;, repr(raw_params)
+ if h.hexdigest() != sig:
+raise BadSignature(&lsquo;signature does not match&rsquo;)
+ return True</p>
+
+<p>```</p>
+
+<p>Ezt a fajta ellenőrzést, hogy biztosítsuk azt, hogy attól származik az üzenet, akinek ő mondja magát <a href="http://en.wikipedia.org/wiki/Hash-based_message_authentication_code" target="_blank">Hash-based message authenticationnak (HMAC)</a> hívják. De &ldquo;sajnos&rdquo; ebben az appban ez hibásan volt implementálva Ha jól mgnézzük, akkor ezt a stringet hasheli &ldquo;secret + raw_params&rdquo; ahol a raw params a postolt változók és értékek &amp; és = összefűzve, a secret meg minden felhasználónak egyedi. Azért hibás, mert a hash függvények az adat blokkjain mennek végig, az itt használt sha1 konkrétan 512 bitenként &ldquo;forog&rdquo; egyet. Minden forgás után vannak regiszterek, ahova az eredmény beíródik. Ha ez az utolsó forgás volt, akkor az lesz a hash függvény kimenete. Az utolsó blokkba pedig belekerül az üzenet mérete. az utolsó 8 bájtra, a maradék pedig 0 bitekkel lesz feltöltve.</p>
+
+<p>Ez konkrétan azt jelenti, hogy ha mondjuk van ez a query stringünk:
+count=10&amp;lat=37.351&amp;user_id=1&amp;long=-119.827&amp;waffle=eggo</p>
+
+<p>Ha jól számolom ez 52 karakter, ami 416 bit. Ehhez tehát még hozzájön a titkos kulcs (legyen mondjuk most 10 karakter), ahhoz pedig hozzájön még a méret az utolsó 8 bájtra, a maradék 0-kal lesz feltöltve:
+TITKOS_KULCS + count=10&amp;lat=37.351&amp;user_id=1&amp;long=-119.827&amp;waffle=eggo (ez eddig 62 karakter), ez már 496 bit, ide már nem fér be a 8 bájtos méret, ezért elkezdjük feltölteni a maradékot. Az sha1 algoritmus 0x80-al kezdi a feltöltést (egy egyes bittel), utána 0-k.</p>
+
+<p>Tehát most van két 512 bites blokkunk, az egyik elején a query string + titkos kulcs  + 0x0 és 0-k, a másikban sok 0 és a végén a méret.
+Az előbb írtam, hogy blokkonként történik a feldolgozás, ami annyit jelent, hogy először feldolgozódik az első 512 bit, ez elmentődik a regiszterekbe (ha 1 blokk lenne, akkor itt lenne az eredmény), majd a második blokk feldolgozása kezdődik, aminek a végén megkapjuk a kimenetet.
+A lényeg az volt, hogy nekünk van egy ilyen kimenetünk, mert meg tudjuk nézni, hogy mi volt a felhasználók lekérése. Természetesen a titkos kulcsukat nem ismerjük, így nem tudtunk a helyükben üzeneteket küldözgetni. Vagyishogy tudunk:</p>
+
+<p>Ha jól megnézzük, akkor abból kiindulva, hogy blokkonként történik a feldolgozás, ha hozzá tudunk fűzni a lekéréshez még paramétereket (amit tudunk), akkor beállítható a szerver hash funkcióinak regiszterei a kívánt állapotba (tehát, hogy az ismert kimeneti hash legyen a regiszterben), innentől mivel a következő blokk csak az előző blokkon múlik (amit tudunk, hisz vissza tudtuk nézni mások hasheit) és az adott blokkon, az adott blokkot mi adhatjuk meg, és nem kell tudnunk a titkos kulcsot, hogy túljuthassunk a hash ellenőrzésen.</p>
+
+<p>Ehhez le kellett szednem egy sha1 c implementációt, hogy a regisztereket a kívánt kezdeti értékre állíthassam (a hashre, amit ismerek)</p>
+
+<p><a href="http://luoska.files.wordpress.com/2012/09/c_sha1.png"><img class="aligncenter size-full wp-image-294" title="c_sha1" src="http://luoska.files.wordpress.com/2012/09/c_sha1.png" alt="" width="640" height="307" /></a></p>
+
+<p>Így kellett volna csinálni elvileg, de nekem mégsem sikerült összehozni, hogy valid hasht generáljak.
+Szóval nem sikerült ezt a pályát teljesítenem. :(
+Lehet, hogy valamit félreértettem, meg amúgy nem gondolkoztam rajta eleget. Valószínűleg ehhez még kevés voltam most, de majd a következőn. :)</p>
+
+<p>További információ:</p>
+
+<p><a href="http://www.herongyang.com/Cryptography/SHA1-Message-Digest-Algorithm-Overview.html"><a href="http://www.herongyang.com/Cryptography/SHA1-Message-Digest-Algorithm-Overview.html">http://www.herongyang.com/Cryptography/SHA1-Message-Digest-Algorithm-Overview.html</a></a></p>
+]]></content>
+  </entry>
+  
+</feed>

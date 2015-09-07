@@ -1,6 +1,26 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
+        <loc>
+            http://luos.github.io/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et/
+        </loc>
+        <lastmod>2015-09-07T21:40:38+02:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://luos.github.io/blog/2011/04/05/hogyan-szamoljuk-meg-a-tablak-sorait-egy-mysql-adatbazisban/
+        </loc>
+        <lastmod>2015-09-07T21:40:38+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://luos.github.io/blog/2011/07/01/prestashop-modulok-fejlesztese/</loc>
+        <lastmod>2015-09-07T21:40:38+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://luos.github.io/blog/2011/10/12/java-set-hulyeseg/</loc>
+        <lastmod>2015-09-07T21:40:38+02:00</lastmod>
+    </url>
+    <url>
         <loc>http://luos.github.io/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3/</loc>
         <lastmod>2015-09-07T21:39:45+02:00</lastmod>
     </url>
@@ -16,11 +36,11 @@
     </url>
     <url>
         <loc>http://luos.github.io/blog/archives/</loc>
-        <lastmod>2015-09-07T21:39:45+02:00</lastmod>
+        <lastmod>2015-09-07T21:40:38+02:00</lastmod>
     </url>
     <url>
         <loc>http://luos.github.io/</loc>
-        <lastmod>2015-09-07T21:39:45+02:00</lastmod>
+        <lastmod>2015-09-07T21:40:38+02:00</lastmod>
     </url>
     <url>
         <loc>http://luos.github.io/projects/</loc>
