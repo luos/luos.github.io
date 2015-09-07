@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: ctf | [Lajos Gerecs:~]]]></title>
-  <link href="http://luos.github.io/blog/categories/ctf/atom.xml" rel="self"/>
-  <link href="http://luos.github.io/"/>
-  <updated>2015-09-07T21:43:28+02:00</updated>
-  <id>http://luos.github.io/</id>
+  <link href="http://lajos.gerecs.hu/blog/categories/ctf/atom.xml" rel="self"/>
+  <link href="http://lajos.gerecs.hu/"/>
+  <updated>2015-09-07T21:44:05+02:00</updated>
+  <id>http://lajos.gerecs.hu/</id>
   <author>
     <name><![CDATA[Lajos Gerecs]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Hogyan nem tudtam végigvinni a Stripe CTF-et?]]></title>
-    <link href="http://luos.github.io/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et/"/>
+    <link href="http://lajos.gerecs.hu/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et/"/>
     <updated>2011-04-05T13:38:00+02:00</updated>
-    <id>http://luos.github.io/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et</id>
+    <id>http://lajos.gerecs.hu/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et</id>
     <content type="html"><![CDATA[<p>A Stripe CTF egy webes biztonságtechnikai verseny, ahogy már írtam róla<a title="Stripe CTF – első benyomások" href="http://luoska.wordpress.com/2012/08/23/stripe-ctf-elso-benyomasok/"> egyik előző</a> postomban. Nekem nagyon tetszett, még sosem játszottam ilyenen.</p>
 
 <p>Eljutottam az utolsó előtti pályáig, de az teljesen kifogott rajtam.</p>
