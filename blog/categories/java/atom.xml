@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: java, | [Lajos Gerecs:~]]]></title>
-  <link href="http://lajos.gerecs.hu/blog/categories/java/atom.xml" rel="self"/>
-  <link href="http://lajos.gerecs.hu/"/>
-  <updated>2015-05-12T21:05:05+01:00</updated>
-  <id>http://lajos.gerecs.hu/</id>
+  <link href="http://luos.github.io/blog/categories/java/atom.xml" rel="self"/>
+  <link href="http://luos.github.io/"/>
+  <updated>2015-09-07T21:47:52+02:00</updated>
+  <id>http://luos.github.io/</id>
   <author>
     <name><![CDATA[Lajos Gerecs]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Java Set hülyeség]]></title>
-    <link href="http://lajos.gerecs.hu/blog/2011/10/12/java-set-hulyeseg/"/>
-    <updated>2011-10-12T20:17:29+01:00</updated>
-    <id>http://lajos.gerecs.hu/blog/2011/10/12/java-set-hulyeseg</id>
+    <link href="http://luos.github.io/blog/2011/10/12/java-set-hulyeseg/"/>
+    <updated>2011-10-12T21:17:29+02:00</updated>
+    <id>http://luos.github.io/blog/2011/10/12/java-set-hulyeseg</id>
     <content type="html"><![CDATA[<p>Csodálatos módon, a Java Set  megvalósításban, ha az ember vizsgálni szeretné, hogy egy elem benne van-e a halmazban, akkor a contains metódus, objektet vár, ami szerintem tök hülyeség, főleg azért mert nem szól, ha véletlen mást ellenőrzök.
 Pl:</p>
 
