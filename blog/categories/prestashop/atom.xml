@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: prestashop | [Lajos Gerecs:~]]]></title>
-  <link href="http://luos.github.io/blog/categories/prestashop/atom.xml" rel="self"/>
-  <link href="http://luos.github.io/"/>
-  <updated>2015-09-07T21:54:54+02:00</updated>
-  <id>http://luos.github.io/</id>
+  <link href="http://lajos.gerecs.hu/blog/categories/prestashop/atom.xml" rel="self"/>
+  <link href="http://lajos.gerecs.hu/"/>
+  <updated>2015-09-07T21:56:39+02:00</updated>
+  <id>http://lajos.gerecs.hu/</id>
   <author>
     <name><![CDATA[Lajos Gerecs]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Prestashop modulok fejlesztése]]></title>
-    <link href="http://luos.github.io/blog/2011/07/01/prestashop-modulok-fejlesztese/"/>
+    <link href="http://lajos.gerecs.hu/blog/2011/07/01/prestashop-modulok-fejlesztese/"/>
     <updated>2011-07-01T16:00:00+02:00</updated>
-    <id>http://luos.github.io/blog/2011/07/01/prestashop-modulok-fejlesztese</id>
+    <id>http://lajos.gerecs.hu/blog/2011/07/01/prestashop-modulok-fejlesztese</id>
     <content type="html"><![CDATA[<p>Ezt emailben írtam, de azért gondolom valakinek hasznos lehet:</p>
 
 <p>Egy modul írása alapvetően elég egyszerű.

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: scala | [Lajos Gerecs:~]]]></title>
-  <link href="http://luos.github.io/blog/categories/scala/atom.xml" rel="self"/>
-  <link href="http://luos.github.io/"/>
-  <updated>2015-09-07T21:54:54+02:00</updated>
-  <id>http://luos.github.io/</id>
+  <link href="http://lajos.gerecs.hu/blog/categories/scala/atom.xml" rel="self"/>
+  <link href="http://lajos.gerecs.hu/"/>
+  <updated>2015-09-07T21:56:39+02:00</updated>
+  <id>http://lajos.gerecs.hu/</id>
   <author>
     <name><![CDATA[Lajos Gerecs]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Solving the Gitcoin Problem – Stripe CTF 3]]></title>
-    <link href="http://luos.github.io/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3/"/>
+    <link href="http://lajos.gerecs.hu/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3/"/>
     <updated>2014-04-29T17:45:54+02:00</updated>
-    <id>http://luos.github.io/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3</id>
+    <id>http://lajos.gerecs.hu/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3</id>
     <content type="html"><![CDATA[<p>In this  problem we had to write a gitcoin miner or somehow make the bash miner better.</p>
 
 <p>First I thought it would be good to use Scala/Akka to pass the Tasks around. My plan was to fill up an Actor system and let it handle the hashing using the sys.process package and some commands from the supplied bash example. For some reason it was a complete fail, the Actor got full and used up all my memory and never done anything, in the end I had to shoot this idea (and the process too :) ). (It could be configured to act as a mailbox, to block until not full but it was too much PITA in my opinion. )</p>
@@ -54,8 +54,8 @@ first commit (some description)
  parent = Seq(&ldquo;git&rdquo;,&ldquo;rev-parse&rdquo;,&ldquo;HEAD&rdquo;).!!.trim
 val bode = s"tree ${tree}\n" +
 s"parent ${parent}\n" +
-s"author CTF user <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#111;&#58;&#x6d;&#x65;&#64;&#x65;&#120;&#x61;&#x6d;&#x70;&#x6c;&#x65;&#46;&#x63;&#111;&#109;">&#109;&#101;&#64;&#101;&#x78;&#x61;&#109;&#112;&#x6c;&#101;&#x2e;&#x63;&#x6f;&#109;</a> ${now} +0000\n" +
-&ldquo;&rdquo;&ldquo;committer CTF user <a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#58;&#109;&#101;&#x40;&#x65;&#x78;&#x61;&#x6d;&#x70;&#x6c;&#101;&#x2e;&#x63;&#111;&#x6d;">&#109;&#101;&#64;&#101;&#x78;&#97;&#x6d;&#112;&#x6c;&#x65;&#46;&#99;&#x6f;&#x6d;</a> 1390941203 +0000
+s"author CTF user <a href="&#x6d;&#97;&#105;&#x6c;&#116;&#x6f;&#x3a;&#x6d;&#101;&#64;&#x65;&#x78;&#97;&#109;&#112;&#x6c;&#101;&#x2e;&#99;&#111;&#109;">&#x6d;&#x65;&#x40;&#101;&#120;&#x61;&#109;&#112;&#x6c;&#101;&#x2e;&#99;&#111;&#x6d;</a> ${now} +0000\n" +
+&ldquo;&rdquo;&ldquo;committer CTF user <a href="&#109;&#x61;&#105;&#108;&#x74;&#111;&#x3a;&#x6d;&#x65;&#x40;&#x65;&#120;&#x61;&#109;&#112;&#108;&#101;&#46;&#x63;&#x6f;&#109;">&#109;&#101;&#64;&#101;&#120;&#x61;&#109;&#112;&#x6c;&#x65;&#46;&#x63;&#x6f;&#109;</a> 1390941203 +0000
 Give me a Gitcoin
 &rdquo;&ldquo;&rdquo;
 var eq = 0
