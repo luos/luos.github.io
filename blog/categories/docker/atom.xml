@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: docker | [Lajos Gerecs:~]]]></title>
+  <link href="http://luos.github.io/blog/categories/docker/atom.xml" rel="self"/>
+  <link href="http://luos.github.io/"/>
+  <updated>2015-09-07T21:36:41+02:00</updated>
+  <id>http://luos.github.io/</id>
+  <author>
+    <name><![CDATA[Lajos Gerecs]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Can not update sources.list in docker?]]></title>
+    <link href="http://luos.github.io/blog/2015/09/07/can-not-update-sources-dot-list-in-docker-slash/"/>
+    <updated>2015-09-07T21:32:37+02:00</updated>
+    <id>http://luos.github.io/blog/2015/09/07/can-not-update-sources-dot-list-in-docker-slash</id>
+    <content type="html"><![CDATA[<p>For unknown reasons to me when you try to run the Dockerfile containing this line, it will not work:</p>
+
+<p><code>
+RUN echo "deb http://http.debian.net/debian jessie-backports main" &gt;&gt; /etc/apt/sources.list
+</code></p>
+
+<p>After the machine is booted however you can insert the line succesfully. You can solve this by running the command below:</p>
+
+<p><code>
+RUN echo "deb http://http.debian.net/debian jessie-backports main" &gt; /etc/apt/sources.list.d/backports.list
+</code></p>
+
+<p>This creates a new file in the sources.list.d and it gets picked up by <code>apt-get update</code>. Make sure the extension is .list.</p>
+]]></content>
+  </entry>
+  
+</feed>
