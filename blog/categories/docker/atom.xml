@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: docker | [Lajos Gerecs:~]]]></title>
-  <link href="http://luos.github.io/blog/categories/docker/atom.xml" rel="self"/>
-  <link href="http://luos.github.io/"/>
-  <updated>2015-09-07T21:47:52+02:00</updated>
-  <id>http://luos.github.io/</id>
+  <link href="http://lajos.gerecs.hu/blog/categories/docker/atom.xml" rel="self"/>
+  <link href="http://lajos.gerecs.hu/"/>
+  <updated>2015-09-07T21:48:31+02:00</updated>
+  <id>http://lajos.gerecs.hu/</id>
   <author>
     <name><![CDATA[Lajos Gerecs]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Can not update sources.list in docker?]]></title>
-    <link href="http://luos.github.io/blog/2015/09/07/can-not-update-sources-dot-list-in-docker-slash/"/>
+    <link href="http://lajos.gerecs.hu/blog/2015/09/07/can-not-update-sources-dot-list-in-docker-slash/"/>
     <updated>2015-09-07T21:32:37+02:00</updated>
-    <id>http://luos.github.io/blog/2015/09/07/can-not-update-sources-dot-list-in-docker-slash</id>
+    <id>http://lajos.gerecs.hu/blog/2015/09/07/can-not-update-sources-dot-list-in-docker-slash</id>
     <content type="html"><![CDATA[<p>For unknown reasons to me when you try to run the Dockerfile containing this line, it will not work:</p>
 
 <p><code>
