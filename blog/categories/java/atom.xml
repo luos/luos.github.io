@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: java, | [Lajos Gerecs:~]]]></title>
+  <link href="http://lajos.gerecs.hu/blog/categories/java/atom.xml" rel="self"/>
+  <link href="http://lajos.gerecs.hu/"/>
+  <updated>2015-05-12T21:05:05+01:00</updated>
+  <id>http://lajos.gerecs.hu/</id>
+  <author>
+    <name><![CDATA[Lajos Gerecs]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Java Set hülyeség]]></title>
+    <link href="http://lajos.gerecs.hu/blog/2011/10/12/java-set-hulyeseg/"/>
+    <updated>2011-10-12T20:17:29+01:00</updated>
+    <id>http://lajos.gerecs.hu/blog/2011/10/12/java-set-hulyeseg</id>
+    <content type="html"><![CDATA[<p>Csodálatos módon, a Java Set  megvalósításban, ha az ember vizsgálni szeretné, hogy egy elem benne van-e a halmazban, akkor a contains metódus, objektet vár, ami szerintem tök hülyeség, főleg azért mert nem szól, ha véletlen mást ellenőrzök.
+Pl:</p>
+
+<p><code>java
+Set&lt;ListItem&gt; votma = new HashSet&lt;ListItem&gt;();
+...
+Node n = getNode(...)
+if ( ! votma.contains(n) )
+{...}
+</code></p>
+
+<p>Ez simán lefordul, ami csak azért baj, mert nem vettem észre, hogy hülyeséget írtam aztán egy óráig kerestem a hibát. Másfelől viszont érthető, hisz bármilyen objektumot meg kell tudni vizsgálni, hogy benne van-e a halmazban, viszont tudható, hogy egy olyan objektum tuti nincs a halmazban, ami nem is lehet benne.</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,612 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>[Lajos Gerecs:~]</title>
+  <meta name="author" content="Lajos Gerecs">
+
+  
+  <meta name="description" content="In this problem we had to write a gitcoin miner or somehow make the bash miner better. First I thought it would be good to use Scala/Akka to pass the &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://lajos.gerecs.hu">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="[Lajos Gerecs:~]" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-39366654-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">[Lajos Gerecs:~]</a></h1>
+  
+    <h2>% a blog</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:lajos.gerecs.hu" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/about">About me</a></li>
+  <li><a href="/projects">Projects</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3/">Solving the Gitcoin Problem – Stripe CTF 3</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-29T16:45:54+01:00" pubdate data-updated="true">2014. 04. 29.</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In this  problem we had to write a gitcoin miner or somehow make the bash miner better.</p>
+
+<p>First I thought it would be good to use Scala/Akka to pass the Tasks around. My plan was to fill up an Actor system and let it handle the hashing using the sys.process package and some commands from the supplied bash example. For some reason it was a complete fail, the Actor got full and used up all my memory and never done anything, in the end I had to shoot this idea (and the process too :) ). (It could be configured to act as a mailbox, to block until not full but it was too much PITA in my opinion. )</p>
+
+<p>After this I tried a simple parallel for and calling</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="n">git</span> <span class="n">hash</span><span class="o">-</span><span class="k">object</span> <span class="nc">-</span><span class="n">t</span> <span class="n">commit</span> <span class="o">--</span><span class="n">stdin</span> <span class="o">-</span><span class="n">w</span> <span class="o">&lt;&lt;&lt;</span> <span class="n">commit</span><span class="o">-</span><span class="n">body</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>this never used more than a couple of percent CPU, I don’t know why, maybe git locks the files in the repo?</p>
+
+<p>After this I got the idea to rewrite the git hash-object part in scala, and in the end it worked out.</p>
+
+<p>If we visit the git objects documentation we can see that a commit contains 5 things:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="n">tree</span> <span class="n">d8329fc1cc938780ffdd9f94e0d364e0ea74f579</span>
+</span><span class='line'><span class="n">parent</span> <span class="n">some</span><span class="o">-</span><span class="n">hash</span>
+</span><span class='line'><span class="n">author</span> <span class="nc">Scott</span> <span class="nc">Chacon</span> <span class="o">&lt;</span><span class="n">schacon</span><span class="nd">@gmail</span><span class="o">.</span><span class="n">com</span><span class="o">&gt;</span> <span class="mi">1243040974</span> <span class="o">-</span><span class="mi">0700</span>
+</span><span class='line'><span class="n">committer</span> <span class="nc">Scott</span> <span class="nc">Chacon</span> <span class="o">&lt;</span><span class="n">schacon</span><span class="nd">@gmail</span><span class="o">.</span><span class="n">com</span><span class="o">&gt;</span> <span class="mi">1243040974</span> <span class="o">-</span><span class="mi">0700</span>
+</span><span class='line'><span class="n">first</span> <span class="n">commit</span> <span class="o">(</span><span class="n">some</span> <span class="n">description</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The first value is the tree, we can obtain this with “git write-tree”. The second value is the parent of the commit, we can obtain this with “git rev-parse HEAD”. The other things in this were just placeholders and the goal was to change the last part of the commit to get a hash with git hash-object which is lower than “000001xxxxxxxxxxxxxxxx…”. This means that the hash must be lower than the string “000001″. This is difficult because the only way to obtain the correct info to get the needed hash to try as many hash as we could in the shortest time possible.</p>
+
+<p>Now we know whats needed by the git hash-object function, we have to know what is the format used to calculate the hash. Turns out git prepends a “commit (body-length)\0″ string to the commit body, so thats what we have to do and we are good to go.</p>
+
+<p>My code looked something like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="n">tree</span> <span class="k">=</span> <span class="nc">Seq</span><span class="o">(</span><span class="s">&quot;git&quot;</span><span class="o">,</span><span class="s">&quot;write-tree&quot;</span><span class="o">).!!.</span><span class="n">trim</span>
+</span><span class='line'> <span class="n">parent</span> <span class="k">=</span> <span class="nc">Seq</span><span class="o">(</span><span class="s">&quot;git&quot;</span><span class="o">,</span><span class="s">&quot;rev-parse&quot;</span><span class="o">,</span><span class="s">&quot;HEAD&quot;</span><span class="o">).!!.</span><span class="n">trim</span>
+</span><span class='line'><span class="k">val</span> <span class="n">bode</span> <span class="k">=</span> <span class="n">s</span><span class="s">&quot;tree ${tree}\n&quot;</span> <span class="o">+</span>
+</span><span class='line'><span class="n">s</span><span class="s">&quot;parent ${parent}\n&quot;</span> <span class="o">+</span>
+</span><span class='line'><span class="n">s</span><span class="s">&quot;author CTF user &lt;me@example.com&gt; ${now} +0000\n&quot;</span> <span class="o">+</span>
+</span><span class='line'><span class="s">&quot;&quot;&quot;committer CTF user &lt;me@example.com&gt; 1390941203 +0000</span>
+</span><span class='line'><span class="s">Give me a Gitcoin</span>
+</span><span class='line'><span class="s">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="k">var</span> <span class="n">eq</span> <span class="k">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="k">val</span> <span class="n">max</span> <span class="k">=</span> <span class="mi">100000000</span>
+</span><span class='line'>   <span class="k">for</span><span class="o">(</span> <span class="n">i</span> <span class="k">&lt;-</span> <span class="o">(</span><span class="mi">0</span> <span class="n">to</span> <span class="n">max</span><span class="o">).</span><span class="n">par</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>       <span class="k">val</span> <span class="n">cbode</span> <span class="k">=</span> <span class="n">bode</span> <span class="o">+</span> <span class="n">i</span><span class="o">+</span><span class="s">&quot;\n&quot;</span>
+</span><span class='line'>       <span class="k">val</span> <span class="n">fullbode</span> <span class="k">=</span> <span class="s">&quot;commit &quot;</span><span class="o">+</span><span class="n">cbode</span><span class="o">.</span><span class="n">length</span><span class="o">+</span><span class="s">&quot;\0&quot;</span> <span class="o">+</span> <span class="n">cbode</span>
+</span><span class='line'>       <span class="k">val</span> <span class="n">hash</span> <span class="k">=</span> <span class="n">digest</span><span class="o">(</span><span class="n">fullbode</span><span class="o">).</span><span class="n">reverse</span><span class="o">.</span><span class="n">padTo</span><span class="o">(</span><span class="mi">40</span><span class="o">,</span><span class="s">&quot;0&quot;</span><span class="o">).</span><span class="n">reverse</span><span class="o">.</span><span class="n">mkString</span>
+</span><span class='line'>
+</span><span class='line'>       <span class="k">if</span> <span class="o">(</span><span class="n">hash</span> <span class="o">&lt;</span> <span class="n">difficulty</span><span class="o">){</span>
+</span><span class='line'>          <span class="n">println</span><span class="o">(</span><span class="s">&quot;-----------------------&quot;</span><span class="o">)</span>
+</span><span class='line'>          <span class="n">println</span><span class="o">(</span><span class="n">fullbode</span><span class="o">)</span>
+</span><span class='line'>          <span class="n">println</span><span class="o">(</span><span class="s">&quot;-----------------------&quot;</span><span class="o">)</span>
+</span><span class='line'>          <span class="k">val</span> <span class="n">cmd</span> <span class="k">=</span> <span class="s">&quot;git hash-object -t commit --stdin -w &lt;&lt;&lt; \&quot;&quot;</span><span class="o">+</span><span class="n">cbode</span><span class="o">.</span><span class="n">trim</span><span class="o">()+</span><span class="s">&quot;\&quot;;git reset --hard \&quot;&quot;</span><span class="o">+</span><span class="n">hash</span><span class="o">+</span><span class="s">&quot;\&quot; &lt; /dev/null; git push origin master;&quot;</span>
+</span><span class='line'>          <span class="n">println</span><span class="o">(</span><span class="n">cmd</span><span class="o">)</span>
+</span><span class='line'>          <span class="n">println</span><span class="o">(</span><span class="s">&quot;-----------------------&quot;</span><span class="o">)</span>
+</span><span class='line'>          <span class="n">println</span><span class="o">(</span><span class="s">&quot;HASH: &quot;</span><span class="o">+</span><span class="n">hash</span><span class="o">)</span>
+</span><span class='line'>          <span class="n">println</span><span class="o">(</span><span class="s">&quot; GITHASH: &quot;</span><span class="o">+</span> <span class="n">commitHash</span><span class="o">(</span><span class="n">cbode</span><span class="o">))</span>
+</span><span class='line'>          <span class="c1">//System.exit(0)</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'> <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I imported the scala.sys.process._ methods/packages to easily run commands. You can see the syntax in the first couple of rows. After assembling the body of the commit I started a parallel for to use my all my CPU cores ( 2. gen mobile core i5).</p>
+
+<p>Timing my miner, hashing 100000000 commits:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="o">../</span><span class="n">scala</span><span class="o">-</span><span class="mf">2.10</span><span class="o">.</span><span class="mi">3</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">scala</span> <span class="o">../</span><span class="nc">Scalaminer</span><span class="o">.</span><span class="n">scala</span>
+</span><span class='line'><span class="mi">1344</span><span class="o">,</span><span class="mi">73</span><span class="n">s</span> <span class="n">user</span> <span class="mi">20</span><span class="o">,</span><span class="mi">31</span><span class="n">s</span> <span class="n">system</span> <span class="mi">355</span><span class="o">%</span> <span class="n">cpu</span> <span class="mi">6</span><span class="k">:</span><span class="err">23</span><span class="o">,</span><span class="mi">53</span> <span class="n">total</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Turns out its approximately 261 kHash/sec.  I don’t know if it counts as fast, it was enough to get a winner commit.</p>
+
+<p>Here is the gist of the code with the remnants of previous tries: <a href="https://gist.github.com/luos/f2c8098be3ef0e49cee9">https://gist.github.com/luos/f2c8098be3ef0e49cee9</a></p>
+
+<p>In the end I committed by hand because there was some trouble with the endline character and sometimes it was needed at the end of the commit, sometimes not. Strange.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/10/12/java-set-hulyeseg/">Java Set hülyeség</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-10-12T20:17:29+01:00" pubdate data-updated="true">2011. 10. 12.</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Csodálatos módon, a Java Set  megvalósításban, ha az ember vizsgálni szeretné, hogy egy elem benne van-e a halmazban, akkor a contains metódus, objektet vár, ami szerintem tök hülyeség, főleg azért mert nem szól, ha véletlen mást ellenőrzök.
+Pl:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Set</span><span class="o">&lt;</span><span class="n">ListItem</span><span class="o">&gt;</span> <span class="n">votma</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">&lt;</span><span class="n">ListItem</span><span class="o">&gt;();</span>
+</span><span class='line'><span class="o">...</span>
+</span><span class='line'><span class="n">Node</span> <span class="n">n</span> <span class="o">=</span> <span class="n">getNode</span><span class="o">(...)</span>
+</span><span class='line'><span class="k">if</span> <span class="o">(</span> <span class="o">!</span> <span class="n">votma</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">n</span><span class="o">)</span> <span class="o">)</span>
+</span><span class='line'><span class="o">{...}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ez simán lefordul, ami csak azért baj, mert nem vettem észre, hogy hülyeséget írtam aztán egy óráig kerestem a hibát. Másfelől viszont érthető, hisz bármilyen objektumot meg kell tudni vizsgálni, hogy benne van-e a halmazban, viszont tudható, hogy egy olyan objektum tuti nincs a halmazban, ami nem is lehet benne.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/07/01/prestashop-modulok-fejlesztese/">Prestashop modulok fejlesztése</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-07-01T15:00:00+01:00" pubdate data-updated="true">2011. 07. 01.</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Ezt emailben írtam, de azért gondolom valakinek hasznos lehet:</p>
+
+<p>Egy modul írása alapvetően elég egyszerű.
+A prestashop biztosít úgynevezett hook-okat, melyek igazából
+események, és meghívódnak akkor, amikor történik valami:
+<a href="http://www.daveegerton.com/prestashop-guides/Prestashop-Designers-Guide/core-modules-structure/hooks.html">http://www.daveegerton.com/prestashop-guides/Prestashop-Designers-Guide/core-modules-structure/hooks.html</a>
+Ezekre a hookokra fel lehet iratkozni, így a te kódod is lefut akkor,
+amikor az esemény megtörténik.
+Az új verziót annyira én se vágom, de ott már van valami trükközés a
+modulinstallációnál xml fájlokkal.
+Nagyjából ennyi a történet. Létrehozol egy mappát a modules mappában,
+bele egy ugyanolyan nevű phpt és classt és kész a modul.
+Az install metódusban feliratkozol ezekre a hookokra, majd az
+adminfelületen felinstallálod és bekapcsolod(!) a modult.
+Legegyszerűbb ezt kilesni egy már ottlévő modulból. A többi része a
+fejlesztésnek tiszta php,  néha a prestashop Database vagy hasonló
+classjait felhasználva.</p>
+
+<p>Ha valami új doboz vagy ilyesmi kellett az admin felületre, akkor én
+azt csak úgy tudtam megoldani, hogy belepiszkálok a viewba. Szerintem
+erre nem nagyon van más megoldás.</p>
+
+<p><a href="http://www.daveegerton.com/prestashop-guides.html">http://www.daveegerton.com/prestashop-guides.html</a></p>
+
+<p>Az egész nem valami bonyolult. :)
+Sajna én már rég csináltam ezt, így konkrétabb linkeket nem tudok
+adni, még 1.3.x-hez fejlesztettem.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/04/05/hogyan-szamoljuk-meg-a-tablak-sorait-egy-mysql-adatbazisban/">Hogyan számoljuk meg a táblák sorait egy MySQL adatbázisban?</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-05T12:38:00+01:00" pubdate data-updated="true">2011. 04. 05.</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Nem tudom, hogy ez a legjobb mód rá, mindenesetre, ha gyorsan kell, működik:</p>
+
+<p>Először is, csináljunk egy lekérdezést:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="n">CONCAT</span><span class="p">(</span> <span class="s1">&#39; ( SELECT &quot;&#39;</span><span class="p">,</span> <span class="k">table_name</span><span class="p">,</span> <span class="s1">&#39;&quot; as tabla , COUNT(*) as db FROM &#39;</span><span class="p">,</span> <span class="k">table_name</span><span class="p">,</span> <span class="s1">&#39;) UNION ALL&#39;</span> <span class="p">)</span>
+</span><span class='line'><span class="k">FROM</span> <span class="n">information_schema</span><span class="p">.</span><span class="n">tables</span>
+</span><span class='line'><span class="k">WHERE</span> <span class="n">table_schema</span> <span class="o">=</span> <span class="s1">&#39;ADATBAZIS_NEVE&#39;</span>
+</span><span class='line'><span class="k">LIMIT</span> <span class="mi">0</span> <span class="p">,</span> <span class="mi">300000</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Majd ha lefuttattuk, kapunk valami ilyesmit:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="p">(</span> <span class="k">SELECT</span> <span class="ss">&quot;kutyuk_access&quot;</span> <span class="k">as</span> <span class="n">tabla</span> <span class="p">,</span> <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">as</span> <span class="n">db</span> <span class="k">FROM</span> <span class="n">kutyuk_access</span><span class="p">)</span> <span class="k">UNION</span> <span class="k">ALL</span><span class="p">(</span> <span class="k">SELECT</span> <span class="ss">&quot;kutyuk_accessory&quot;</span> <span class="k">as</span> <span class="n">tabla</span> <span class="p">,</span> <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">as</span> <span class="n">db</span> <span class="k">FROM</span> <span class="n">kutyuk_accessory</span><span class="p">)</span> <span class="k">UNION</span> <span class="k">ALL</span><span class="p">(</span> <span class="k">SELECT</span> <span class="ss">&quot;kutyuk_address&quot;</span> <span class="k">as</span> <span class="n">tabla</span> <span class="p">,</span> <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">as</span> <span class="n">db</span> <span class="k">FROM</span> <span class="n">kutyuk_address</span><span class="p">)</span> <span class="k">UNION</span> <span class="k">ALL</span><span class="p">(</span> <span class="k">SELECT</span> <span class="ss">&quot;kutyuk_alias&quot;</span> <span class="k">as</span> <span class="n">tabla</span> <span class="p">,</span> <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">as</span> <span class="n">db</span> <span class="k">FROM</span> <span class="n">kutyuk_alias</span><span class="p">)</span> <span class="k">UNION</span> <span class="k">ALL</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A legutolsó SQL végéről töröljük le az UNION ALL-t, és hogy később tudjuk rendezni mondjuk</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et/">Hogyan nem tudtam végigvinni a Stripe CTF-et?</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-05T12:38:00+01:00" pubdate data-updated="true">2011. 04. 05.</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>A Stripe CTF egy webes biztonságtechnikai verseny, ahogy már írtam róla<a title="Stripe CTF – első benyomások" href="http://luoska.wordpress.com/2012/08/23/stripe-ctf-elso-benyomasok/"> egyik előző</a> postomban. Nekem nagyon tetszett, még sosem játszottam ilyenen.</p>
+
+<p>Eljutottam az utolsó előtti pályáig, de az teljesen kifogott rajtam.</p>
+
+<p>Nézegettem a kódot, de sehogy sem sikerült rájönnöm, hogy mi a hiba. Persze arra rájöttem, hogy részben ezt a kódot kell kihasználni:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">parse_params</span><span class="p">(</span><span class="n">raw_params</span><span class="p">):</span>
+</span><span class='line'>   <span class="n">pairs</span> <span class="o">=</span> <span class="n">raw_params</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;&amp;&#39;</span><span class="p">)</span>
+</span><span class='line'>   <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span class='line'>   <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
+</span><span class='line'>     <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">pair</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;=&#39;</span><span class="p">)</span>
+</span><span class='line'>     <span class="n">key</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">unquote_plus</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</span><span class='line'>     <span class="n">val</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">unquote_plus</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+</span><span class='line'>     <span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+</span><span class='line'> <span class="k">return</span> <span class="n">params</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Elég nyilvánvaló volt, hogy az POST request bodyját úgy kell majd módosítani, hogy a hátul lévő paraméterek felülírják az elől lévőket, így tulajdonképpen valahogy túl kéne járni a hash ellenőrző eszén. Ezt jól is gondoltam, de ezen kívül itt el is akadtam. Fel kellett mennem az IRC-re, hogy megkérdezzem, mégis mi a halált kéne csinálnom (note: itt már kb 2 napja nézegettem a kódot). Annyit mondtak kb, hogy &ldquo;the hashing has some security vulnerabilities. Nah hát ez sem sokat segített, úgyhogy rákerestem a googleban, hogy mi ennek a feladatnak a megoldása.
+Hát nem csodálom, hogy nem tudtam megoldani, de legalább egy olyan dolgot tanultam, amit egy átlagember nem nagyon tud, legalábbis szerintem. Érdekes, hogy egy félév kódolástechnika után semmit sem tudtam arról, hogy a valóságban hogyan működnek a hash függvények.</p>
+
+<p>A hiba ebben a kódrészletben volt:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">secret</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;secret&#39;</span><span class="p">])</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">h</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">()</span>
+</span><span class='line'> <span class="n">h</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">secret</span> <span class="o">+</span> <span class="n">raw_params</span><span class="p">)</span>
+</span><span class='line'> <span class="k">print</span> <span class="s">&#39;computed signature&#39;</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span> <span class="s">&#39;for body&#39;</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">raw_params</span><span class="p">)</span>
+</span><span class='line'> <span class="k">if</span> <span class="n">h</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span> <span class="o">!=</span> <span class="n">sig</span><span class="p">:</span>
+</span><span class='line'><span class="k">raise</span> <span class="n">BadSignature</span><span class="p">(</span><span class="s">&#39;signature does not match&#39;</span><span class="p">)</span>
+</span><span class='line'> <span class="k">return</span> <span class="bp">True</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ezt a fajta ellenőrzést, hogy biztosítsuk azt, hogy attól származik az üzenet, akinek ő mondja magát <a href="http://en.wikipedia.org/wiki/Hash-based_message_authentication_code" target="_blank">Hash-based message authenticationnak (HMAC)</a> hívják. De &ldquo;sajnos&rdquo; ebben az appban ez hibásan volt implementálva Ha jól mgnézzük, akkor ezt a stringet hasheli &ldquo;secret + raw_params&rdquo; ahol a raw params a postolt változók és értékek &amp; és = összefűzve, a secret meg minden felhasználónak egyedi. Azért hibás, mert a hash függvények az adat blokkjain mennek végig, az itt használt sha1 konkrétan 512 bitenként &ldquo;forog&rdquo; egyet. Minden forgás után vannak regiszterek, ahova az eredmény beíródik. Ha ez az utolsó forgás volt, akkor az lesz a hash függvény kimenete. Az utolsó blokkba pedig belekerül az üzenet mérete. az utolsó 8 bájtra, a maradék pedig 0 bitekkel lesz feltöltve.</p>
+
+<p>Ez konkrétan azt jelenti, hogy ha mondjuk van ez a query stringünk:
+count=10&amp;lat=37.351&amp;user_id=1&amp;long=-119.827&amp;waffle=eggo</p>
+
+<p>Ha jól számolom ez 52 karakter, ami 416 bit. Ehhez tehát még hozzájön a titkos kulcs (legyen mondjuk most 10 karakter), ahhoz pedig hozzájön még a méret az utolsó 8 bájtra, a maradék 0-kal lesz feltöltve:
+TITKOS_KULCS + count=10&amp;lat=37.351&amp;user_id=1&amp;long=-119.827&amp;waffle=eggo (ez eddig 62 karakter), ez már 496 bit, ide már nem fér be a 8 bájtos méret, ezért elkezdjük feltölteni a maradékot. Az sha1 algoritmus 0x80-al kezdi a feltöltést (egy egyes bittel), utána 0-k.</p>
+
+<p>Tehát most van két 512 bites blokkunk, az egyik elején a query string + titkos kulcs  + 0x0 és 0-k, a másikban sok 0 és a végén a méret.
+Az előbb írtam, hogy blokkonként történik a feldolgozás, ami annyit jelent, hogy először feldolgozódik az első 512 bit, ez elmentődik a regiszterekbe (ha 1 blokk lenne, akkor itt lenne az eredmény), majd a második blokk feldolgozása kezdődik, aminek a végén megkapjuk a kimenetet.
+A lényeg az volt, hogy nekünk van egy ilyen kimenetünk, mert meg tudjuk nézni, hogy mi volt a felhasználók lekérése. Természetesen a titkos kulcsukat nem ismerjük, így nem tudtunk a helyükben üzeneteket küldözgetni. Vagyishogy tudunk:</p>
+
+<p>Ha jól megnézzük, akkor abból kiindulva, hogy blokkonként történik a feldolgozás, ha hozzá tudunk fűzni a lekéréshez még paramétereket (amit tudunk), akkor beállítható a szerver hash funkcióinak regiszterei a kívánt állapotba (tehát, hogy az ismert kimeneti hash legyen a regiszterben), innentől mivel a következő blokk csak az előző blokkon múlik (amit tudunk, hisz vissza tudtuk nézni mások hasheit) és az adott blokkon, az adott blokkot mi adhatjuk meg, és nem kell tudnunk a titkos kulcsot, hogy túljuthassunk a hash ellenőrzésen.</p>
+
+<p>Ehhez le kellett szednem egy sha1 c implementációt, hogy a regisztereket a kívánt kezdeti értékre állíthassam (a hashre, amit ismerek)</p>
+
+<p><a href="http://luoska.files.wordpress.com/2012/09/c_sha1.png"><img class="aligncenter size-full wp-image-294" title="c_sha1" src="http://luoska.files.wordpress.com/2012/09/c_sha1.png" alt="" width="640" height="307" /></a></p>
+
+<p>Így kellett volna csinálni elvileg, de nekem mégsem sikerült összehozni, hogy valid hasht generáljak.
+Szóval nem sikerült ezt a pályát teljesítenem. :(
+Lehet, hogy valamit félreértettem, meg amúgy nem gondolkoztam rajta eleget. Valószínűleg ehhez még kevés voltam most, de majd a következőn. :)</p>
+
+<p>További információ:</p>
+
+<p><a href="http://www.herongyang.com/Cryptography/SHA1-Message-Digest-Algorithm-Overview.html"><a href="http://www.herongyang.com/Cryptography/SHA1-Message-Digest-Algorithm-Overview.html">http://www.herongyang.com/Cryptography/SHA1-Message-Digest-Algorithm-Overview.html</a></a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3/">Solving the Gitcoin Problem – Stripe CTF 3</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/12/java-set-hulyeseg/">Java Set hülyeség</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/07/01/prestashop-modulok-fejlesztese/">Prestashop modulok fejlesztése</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/04/05/hogyan-szamoljuk-meg-a-tablak-sorait-egy-mysql-adatbazisban/">Hogyan számoljuk meg a táblák sorait egy MySQL adatbázisban?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et/">Hogyan nem tudtam végigvinni a Stripe CTF-et?</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/luos">@luos</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'luos',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Lajos Gerecs -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

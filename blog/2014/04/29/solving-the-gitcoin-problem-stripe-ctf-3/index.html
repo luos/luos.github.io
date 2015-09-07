@@ -1,0 +1,368 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Solving the Gitcoin Problem – Stripe CTF 3 - [Lajos Gerecs:~]</title>
+  <meta name="author" content="Lajos Gerecs">
+
+  
+  <meta name="description" content="In this problem we had to write a gitcoin miner or somehow make the bash miner better. First I thought it would be good to use Scala/Akka to pass the &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://lajos.gerecs.hu/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="[Lajos Gerecs:~]" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-39366654-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">[Lajos Gerecs:~]</a></h1>
+  
+    <h2>% a blog</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:lajos.gerecs.hu" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/about">About me</a></li>
+  <li><a href="/projects">Projects</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Solving the Gitcoin Problem – Stripe CTF 3</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-29T16:45:54+01:00" pubdate data-updated="true">2014. 04. 29.</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>In this  problem we had to write a gitcoin miner or somehow make the bash miner better.</p>
+
+<p>First I thought it would be good to use Scala/Akka to pass the Tasks around. My plan was to fill up an Actor system and let it handle the hashing using the sys.process package and some commands from the supplied bash example. For some reason it was a complete fail, the Actor got full and used up all my memory and never done anything, in the end I had to shoot this idea (and the process too :) ). (It could be configured to act as a mailbox, to block until not full but it was too much PITA in my opinion. )</p>
+
+<p>After this I tried a simple parallel for and calling</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="n">git</span> <span class="n">hash</span><span class="o">-</span><span class="k">object</span> <span class="nc">-</span><span class="n">t</span> <span class="n">commit</span> <span class="o">--</span><span class="n">stdin</span> <span class="o">-</span><span class="n">w</span> <span class="o">&lt;&lt;&lt;</span> <span class="n">commit</span><span class="o">-</span><span class="n">body</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>this never used more than a couple of percent CPU, I don’t know why, maybe git locks the files in the repo?</p>
+
+<p>After this I got the idea to rewrite the git hash-object part in scala, and in the end it worked out.</p>
+
+<p>If we visit the git objects documentation we can see that a commit contains 5 things:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="n">tree</span> <span class="n">d8329fc1cc938780ffdd9f94e0d364e0ea74f579</span>
+</span><span class='line'><span class="n">parent</span> <span class="n">some</span><span class="o">-</span><span class="n">hash</span>
+</span><span class='line'><span class="n">author</span> <span class="nc">Scott</span> <span class="nc">Chacon</span> <span class="o">&lt;</span><span class="n">schacon</span><span class="nd">@gmail</span><span class="o">.</span><span class="n">com</span><span class="o">&gt;</span> <span class="mi">1243040974</span> <span class="o">-</span><span class="mi">0700</span>
+</span><span class='line'><span class="n">committer</span> <span class="nc">Scott</span> <span class="nc">Chacon</span> <span class="o">&lt;</span><span class="n">schacon</span><span class="nd">@gmail</span><span class="o">.</span><span class="n">com</span><span class="o">&gt;</span> <span class="mi">1243040974</span> <span class="o">-</span><span class="mi">0700</span>
+</span><span class='line'><span class="n">first</span> <span class="n">commit</span> <span class="o">(</span><span class="n">some</span> <span class="n">description</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The first value is the tree, we can obtain this with “git write-tree”. The second value is the parent of the commit, we can obtain this with “git rev-parse HEAD”. The other things in this were just placeholders and the goal was to change the last part of the commit to get a hash with git hash-object which is lower than “000001xxxxxxxxxxxxxxxx…”. This means that the hash must be lower than the string “000001″. This is difficult because the only way to obtain the correct info to get the needed hash to try as many hash as we could in the shortest time possible.</p>
+
+<p>Now we know whats needed by the git hash-object function, we have to know what is the format used to calculate the hash. Turns out git prepends a “commit (body-length)\0″ string to the commit body, so thats what we have to do and we are good to go.</p>
+
+<p>My code looked something like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="n">tree</span> <span class="k">=</span> <span class="nc">Seq</span><span class="o">(</span><span class="s">&quot;git&quot;</span><span class="o">,</span><span class="s">&quot;write-tree&quot;</span><span class="o">).!!.</span><span class="n">trim</span>
+</span><span class='line'> <span class="n">parent</span> <span class="k">=</span> <span class="nc">Seq</span><span class="o">(</span><span class="s">&quot;git&quot;</span><span class="o">,</span><span class="s">&quot;rev-parse&quot;</span><span class="o">,</span><span class="s">&quot;HEAD&quot;</span><span class="o">).!!.</span><span class="n">trim</span>
+</span><span class='line'><span class="k">val</span> <span class="n">bode</span> <span class="k">=</span> <span class="n">s</span><span class="s">&quot;tree ${tree}\n&quot;</span> <span class="o">+</span>
+</span><span class='line'><span class="n">s</span><span class="s">&quot;parent ${parent}\n&quot;</span> <span class="o">+</span>
+</span><span class='line'><span class="n">s</span><span class="s">&quot;author CTF user &lt;me@example.com&gt; ${now} +0000\n&quot;</span> <span class="o">+</span>
+</span><span class='line'><span class="s">&quot;&quot;&quot;committer CTF user &lt;me@example.com&gt; 1390941203 +0000</span>
+</span><span class='line'><span class="s">Give me a Gitcoin</span>
+</span><span class='line'><span class="s">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="k">var</span> <span class="n">eq</span> <span class="k">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="k">val</span> <span class="n">max</span> <span class="k">=</span> <span class="mi">100000000</span>
+</span><span class='line'>   <span class="k">for</span><span class="o">(</span> <span class="n">i</span> <span class="k">&lt;-</span> <span class="o">(</span><span class="mi">0</span> <span class="n">to</span> <span class="n">max</span><span class="o">).</span><span class="n">par</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>       <span class="k">val</span> <span class="n">cbode</span> <span class="k">=</span> <span class="n">bode</span> <span class="o">+</span> <span class="n">i</span><span class="o">+</span><span class="s">&quot;\n&quot;</span>
+</span><span class='line'>       <span class="k">val</span> <span class="n">fullbode</span> <span class="k">=</span> <span class="s">&quot;commit &quot;</span><span class="o">+</span><span class="n">cbode</span><span class="o">.</span><span class="n">length</span><span class="o">+</span><span class="s">&quot;\0&quot;</span> <span class="o">+</span> <span class="n">cbode</span>
+</span><span class='line'>       <span class="k">val</span> <span class="n">hash</span> <span class="k">=</span> <span class="n">digest</span><span class="o">(</span><span class="n">fullbode</span><span class="o">).</span><span class="n">reverse</span><span class="o">.</span><span class="n">padTo</span><span class="o">(</span><span class="mi">40</span><span class="o">,</span><span class="s">&quot;0&quot;</span><span class="o">).</span><span class="n">reverse</span><span class="o">.</span><span class="n">mkString</span>
+</span><span class='line'>
+</span><span class='line'>       <span class="k">if</span> <span class="o">(</span><span class="n">hash</span> <span class="o">&lt;</span> <span class="n">difficulty</span><span class="o">){</span>
+</span><span class='line'>          <span class="n">println</span><span class="o">(</span><span class="s">&quot;-----------------------&quot;</span><span class="o">)</span>
+</span><span class='line'>          <span class="n">println</span><span class="o">(</span><span class="n">fullbode</span><span class="o">)</span>
+</span><span class='line'>          <span class="n">println</span><span class="o">(</span><span class="s">&quot;-----------------------&quot;</span><span class="o">)</span>
+</span><span class='line'>          <span class="k">val</span> <span class="n">cmd</span> <span class="k">=</span> <span class="s">&quot;git hash-object -t commit --stdin -w &lt;&lt;&lt; \&quot;&quot;</span><span class="o">+</span><span class="n">cbode</span><span class="o">.</span><span class="n">trim</span><span class="o">()+</span><span class="s">&quot;\&quot;;git reset --hard \&quot;&quot;</span><span class="o">+</span><span class="n">hash</span><span class="o">+</span><span class="s">&quot;\&quot; &lt; /dev/null; git push origin master;&quot;</span>
+</span><span class='line'>          <span class="n">println</span><span class="o">(</span><span class="n">cmd</span><span class="o">)</span>
+</span><span class='line'>          <span class="n">println</span><span class="o">(</span><span class="s">&quot;-----------------------&quot;</span><span class="o">)</span>
+</span><span class='line'>          <span class="n">println</span><span class="o">(</span><span class="s">&quot;HASH: &quot;</span><span class="o">+</span><span class="n">hash</span><span class="o">)</span>
+</span><span class='line'>          <span class="n">println</span><span class="o">(</span><span class="s">&quot; GITHASH: &quot;</span><span class="o">+</span> <span class="n">commitHash</span><span class="o">(</span><span class="n">cbode</span><span class="o">))</span>
+</span><span class='line'>          <span class="c1">//System.exit(0)</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'> <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I imported the scala.sys.process._ methods/packages to easily run commands. You can see the syntax in the first couple of rows. After assembling the body of the commit I started a parallel for to use my all my CPU cores ( 2. gen mobile core i5).</p>
+
+<p>Timing my miner, hashing 100000000 commits:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="o">../</span><span class="n">scala</span><span class="o">-</span><span class="mf">2.10</span><span class="o">.</span><span class="mi">3</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">scala</span> <span class="o">../</span><span class="nc">Scalaminer</span><span class="o">.</span><span class="n">scala</span>
+</span><span class='line'><span class="mi">1344</span><span class="o">,</span><span class="mi">73</span><span class="n">s</span> <span class="n">user</span> <span class="mi">20</span><span class="o">,</span><span class="mi">31</span><span class="n">s</span> <span class="n">system</span> <span class="mi">355</span><span class="o">%</span> <span class="n">cpu</span> <span class="mi">6</span><span class="k">:</span><span class="err">23</span><span class="o">,</span><span class="mi">53</span> <span class="n">total</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Turns out its approximately 261 kHash/sec.  I don’t know if it counts as fast, it was enough to get a winner commit.</p>
+
+<p>Here is the gist of the code with the remnants of previous tries: <a href="https://gist.github.com/luos/f2c8098be3ef0e49cee9">https://gist.github.com/luos/f2c8098be3ef0e49cee9</a></p>
+
+<p>In the end I committed by hand because there was some trouble with the endline character and sometimes it was needed at the end of the commit, sometimes not. Strange.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Lajos Gerecs</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-29T16:45:54+01:00" pubdate data-updated="true">2014. 04. 29.</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/en/'>en</a>, <a class='category' href='/blog/categories/scala/'>scala</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://lajos.gerecs.hu/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3/" data-via="" data-counturl="http://lajos.gerecs.hu/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/10/12/java-set-hulyeseg/" title="Previous Post: Java Set hülyeség">&laquo; Java Set hülyeség</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3/">Solving the Gitcoin Problem – Stripe CTF 3</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/12/java-set-hulyeseg/">Java Set hülyeség</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/07/01/prestashop-modulok-fejlesztese/">Prestashop modulok fejlesztése</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/04/05/hogyan-szamoljuk-meg-a-tablak-sorait-egy-mysql-adatbazisban/">Hogyan számoljuk meg a táblák sorait egy MySQL adatbázisban?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et/">Hogyan nem tudtam végigvinni a Stripe CTF-et?</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/luos">@luos</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'luos',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Lajos Gerecs -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

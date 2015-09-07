@@ -1,0 +1,335 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Hogyan nem tudtam végigvinni a Stripe CTF-et? - [Lajos Gerecs:~]</title>
+  <meta name="author" content="Lajos Gerecs">
+
+  
+  <meta name="description" content="A Stripe CTF egy webes biztonságtechnikai verseny, ahogy már írtam róla egyik előző postomban. Nekem nagyon tetszett, még sosem játszottam ilyenen. &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://lajos.gerecs.hu/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="[Lajos Gerecs:~]" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-39366654-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">[Lajos Gerecs:~]</a></h1>
+  
+    <h2>% a blog</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:lajos.gerecs.hu" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/about">About me</a></li>
+  <li><a href="/projects">Projects</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Hogyan nem tudtam végigvinni a Stripe CTF-et?</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-05T12:38:00+01:00" pubdate data-updated="true">2011. 04. 05.</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>A Stripe CTF egy webes biztonságtechnikai verseny, ahogy már írtam róla<a title="Stripe CTF – első benyomások" href="http://luoska.wordpress.com/2012/08/23/stripe-ctf-elso-benyomasok/"> egyik előző</a> postomban. Nekem nagyon tetszett, még sosem játszottam ilyenen.</p>
+
+<p>Eljutottam az utolsó előtti pályáig, de az teljesen kifogott rajtam.</p>
+
+<p>Nézegettem a kódot, de sehogy sem sikerült rájönnöm, hogy mi a hiba. Persze arra rájöttem, hogy részben ezt a kódot kell kihasználni:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">parse_params</span><span class="p">(</span><span class="n">raw_params</span><span class="p">):</span>
+</span><span class='line'>   <span class="n">pairs</span> <span class="o">=</span> <span class="n">raw_params</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;&amp;&#39;</span><span class="p">)</span>
+</span><span class='line'>   <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span class='line'>   <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
+</span><span class='line'>     <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">pair</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;=&#39;</span><span class="p">)</span>
+</span><span class='line'>     <span class="n">key</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">unquote_plus</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</span><span class='line'>     <span class="n">val</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">unquote_plus</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+</span><span class='line'>     <span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+</span><span class='line'> <span class="k">return</span> <span class="n">params</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Elég nyilvánvaló volt, hogy az POST request bodyját úgy kell majd módosítani, hogy a hátul lévő paraméterek felülírják az elől lévőket, így tulajdonképpen valahogy túl kéne járni a hash ellenőrző eszén. Ezt jól is gondoltam, de ezen kívül itt el is akadtam. Fel kellett mennem az IRC-re, hogy megkérdezzem, mégis mi a halált kéne csinálnom (note: itt már kb 2 napja nézegettem a kódot). Annyit mondtak kb, hogy &ldquo;the hashing has some security vulnerabilities. Nah hát ez sem sokat segített, úgyhogy rákerestem a googleban, hogy mi ennek a feladatnak a megoldása.
+Hát nem csodálom, hogy nem tudtam megoldani, de legalább egy olyan dolgot tanultam, amit egy átlagember nem nagyon tud, legalábbis szerintem. Érdekes, hogy egy félév kódolástechnika után semmit sem tudtam arról, hogy a valóságban hogyan működnek a hash függvények.</p>
+
+<p>A hiba ebben a kódrészletben volt:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">secret</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;secret&#39;</span><span class="p">])</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">h</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">()</span>
+</span><span class='line'> <span class="n">h</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">secret</span> <span class="o">+</span> <span class="n">raw_params</span><span class="p">)</span>
+</span><span class='line'> <span class="k">print</span> <span class="s">&#39;computed signature&#39;</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span> <span class="s">&#39;for body&#39;</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">raw_params</span><span class="p">)</span>
+</span><span class='line'> <span class="k">if</span> <span class="n">h</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span> <span class="o">!=</span> <span class="n">sig</span><span class="p">:</span>
+</span><span class='line'><span class="k">raise</span> <span class="n">BadSignature</span><span class="p">(</span><span class="s">&#39;signature does not match&#39;</span><span class="p">)</span>
+</span><span class='line'> <span class="k">return</span> <span class="bp">True</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ezt a fajta ellenőrzést, hogy biztosítsuk azt, hogy attól származik az üzenet, akinek ő mondja magát <a href="http://en.wikipedia.org/wiki/Hash-based_message_authentication_code" target="_blank">Hash-based message authenticationnak (HMAC)</a> hívják. De &ldquo;sajnos&rdquo; ebben az appban ez hibásan volt implementálva Ha jól mgnézzük, akkor ezt a stringet hasheli &ldquo;secret + raw_params&rdquo; ahol a raw params a postolt változók és értékek &amp; és = összefűzve, a secret meg minden felhasználónak egyedi. Azért hibás, mert a hash függvények az adat blokkjain mennek végig, az itt használt sha1 konkrétan 512 bitenként &ldquo;forog&rdquo; egyet. Minden forgás után vannak regiszterek, ahova az eredmény beíródik. Ha ez az utolsó forgás volt, akkor az lesz a hash függvény kimenete. Az utolsó blokkba pedig belekerül az üzenet mérete. az utolsó 8 bájtra, a maradék pedig 0 bitekkel lesz feltöltve.</p>
+
+<p>Ez konkrétan azt jelenti, hogy ha mondjuk van ez a query stringünk:
+count=10&amp;lat=37.351&amp;user_id=1&amp;long=-119.827&amp;waffle=eggo</p>
+
+<p>Ha jól számolom ez 52 karakter, ami 416 bit. Ehhez tehát még hozzájön a titkos kulcs (legyen mondjuk most 10 karakter), ahhoz pedig hozzájön még a méret az utolsó 8 bájtra, a maradék 0-kal lesz feltöltve:
+TITKOS_KULCS + count=10&amp;lat=37.351&amp;user_id=1&amp;long=-119.827&amp;waffle=eggo (ez eddig 62 karakter), ez már 496 bit, ide már nem fér be a 8 bájtos méret, ezért elkezdjük feltölteni a maradékot. Az sha1 algoritmus 0x80-al kezdi a feltöltést (egy egyes bittel), utána 0-k.</p>
+
+<p>Tehát most van két 512 bites blokkunk, az egyik elején a query string + titkos kulcs  + 0x0 és 0-k, a másikban sok 0 és a végén a méret.
+Az előbb írtam, hogy blokkonként történik a feldolgozás, ami annyit jelent, hogy először feldolgozódik az első 512 bit, ez elmentődik a regiszterekbe (ha 1 blokk lenne, akkor itt lenne az eredmény), majd a második blokk feldolgozása kezdődik, aminek a végén megkapjuk a kimenetet.
+A lényeg az volt, hogy nekünk van egy ilyen kimenetünk, mert meg tudjuk nézni, hogy mi volt a felhasználók lekérése. Természetesen a titkos kulcsukat nem ismerjük, így nem tudtunk a helyükben üzeneteket küldözgetni. Vagyishogy tudunk:</p>
+
+<p>Ha jól megnézzük, akkor abból kiindulva, hogy blokkonként történik a feldolgozás, ha hozzá tudunk fűzni a lekéréshez még paramétereket (amit tudunk), akkor beállítható a szerver hash funkcióinak regiszterei a kívánt állapotba (tehát, hogy az ismert kimeneti hash legyen a regiszterben), innentől mivel a következő blokk csak az előző blokkon múlik (amit tudunk, hisz vissza tudtuk nézni mások hasheit) és az adott blokkon, az adott blokkot mi adhatjuk meg, és nem kell tudnunk a titkos kulcsot, hogy túljuthassunk a hash ellenőrzésen.</p>
+
+<p>Ehhez le kellett szednem egy sha1 c implementációt, hogy a regisztereket a kívánt kezdeti értékre állíthassam (a hashre, amit ismerek)</p>
+
+<p><a href="http://luoska.files.wordpress.com/2012/09/c_sha1.png"><img class="aligncenter size-full wp-image-294" title="c_sha1" src="http://luoska.files.wordpress.com/2012/09/c_sha1.png" alt="" width="640" height="307" /></a></p>
+
+<p>Így kellett volna csinálni elvileg, de nekem mégsem sikerült összehozni, hogy valid hasht generáljak.
+Szóval nem sikerült ezt a pályát teljesítenem. :(
+Lehet, hogy valamit félreértettem, meg amúgy nem gondolkoztam rajta eleget. Valószínűleg ehhez még kevés voltam most, de majd a következőn. :)</p>
+
+<p>További információ:</p>
+
+<p><a href="http://www.herongyang.com/Cryptography/SHA1-Message-Digest-Algorithm-Overview.html"><a href="http://www.herongyang.com/Cryptography/SHA1-Message-Digest-Algorithm-Overview.html">http://www.herongyang.com/Cryptography/SHA1-Message-Digest-Algorithm-Overview.html</a></a></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Lajos Gerecs</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-05T12:38:00+01:00" pubdate data-updated="true">2011. 04. 05.</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ctf/'>ctf</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://lajos.gerecs.hu/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et/" data-via="" data-counturl="http://lajos.gerecs.hu/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/04/05/hogyan-szamoljuk-meg-a-tablak-sorait-egy-mysql-adatbazisban/" title="Next Post: Hogyan számoljuk meg a táblák sorait egy MySQL adatbázisban?">Hogyan számoljuk meg a táblák sorait egy MySQL adatbázisban? &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/04/29/solving-the-gitcoin-problem-stripe-ctf-3/">Solving the Gitcoin Problem – Stripe CTF 3</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/12/java-set-hulyeseg/">Java Set hülyeség</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/07/01/prestashop-modulok-fejlesztese/">Prestashop modulok fejlesztése</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/04/05/hogyan-szamoljuk-meg-a-tablak-sorait-egy-mysql-adatbazisban/">Hogyan számoljuk meg a táblák sorait egy MySQL adatbázisban?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/04/05/hogyan-nem-tudtam-vegigvinni-a-stripe-ctf-et/">Hogyan nem tudtam végigvinni a Stripe CTF-et?</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/luos">@luos</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'luos',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Lajos Gerecs -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
