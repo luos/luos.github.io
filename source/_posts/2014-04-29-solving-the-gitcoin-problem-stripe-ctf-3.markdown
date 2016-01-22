@@ -1,27 +1,34 @@
 ---
 layout: post
-title: "Solving the Gitcoin Problem – Stripe CTF 3"
+title: Solving the Gitcoin Problem – Stripe CTF 3
 date: 2014-04-29 17:45:54 +0200
 comments: true
 categories: [en, scala]
 ---
 
-In this  problem we had to write a gitcoin miner or somehow make the bash miner better.
+Stripe, the payment provider, origanised a [CTF](https://stripe.com/blog/ctf3-launch), where you could the basics of distributed systems. One of the tasks was to write a bitcoin-ledger-like implementation based on git. 
 
-First I thought it would be good to use Scala/Akka to pass the Tasks around. My plan was to fill up an Actor system and let it handle the hashing using the sys.process package and some commands from the supplied bash example. For some reason it was a complete fail, the Actor got full and used up all my memory and never done anything, in the end I had to shoot this idea (and the process too :) ). (It could be configured to act as a mailbox, to block until not full but it was too much PITA in my opinion. )
+If you are not well versed in the git implementation, then you should know for this that git creates an object for every commit. This commit contains a sha hash of the contents you are storing plus the hash of the related information. This information contains  the user, email, and commit message.
+
+In bitcoin mining you always want to generate a hash which is less than some kind of constant. For example if you generate hash "123" and requirements contain "001" then your hash is not accepted as it's not less than the required threshold. 
+
+In this tasks we had to generate an sha hash less than the required threshold which as "000001". If we accept that sha hashes are random then it this task actaully says that we have to generate around 16 million hashes in the time they set us, which was around a few minutes. 
+
+In this  problem we had to write a gitcoin miner and we had an example miner which was really slow. 
+
+First I thought it would be good to use Scala/Akka to pass the Tasks around. My plan was to fill up an Actor system and let it handle the hashing using the sys.process package and some commands from the supplied bash example. For some reason it was a complete fail, the Actor got full and used up all my memory and never done anything, in the end I had to shoot this idea (and the process too :) ). 
 
 After this I tried a simple parallel for and calling 
-
 
 ``` scala
 git hash-object -t commit --stdin -w <<< commit-body
 ```
 
-this never used more than a couple of percent CPU, I don’t know why, maybe git locks the files in the repo?
+This has never used more than a couple of percent CPU, I don’t know why, maybe git locks the files in the repo?
 
 After this I got the idea to rewrite the git hash-object part in scala, and in the end it worked out.
 
-If we visit the git objects documentation we can see that a commit contains 5 things:
+If we visit the git objects documentation we can see that a commit contains five things:
 
 ``` scala
 tree d8329fc1cc938780ffdd9f94e0d364e0ea74f579
@@ -39,8 +46,8 @@ My code looked something like this:
 
 ``` scala
 
-tree = Seq("git","write-tree").!!.trim
- parent = Seq("git","rev-parse","HEAD").!!.trim
+val tree = Seq("git","write-tree").!!.trim
+val parent = Seq("git","rev-parse","HEAD").!!.trim
 val bode = s"tree ${tree}\n" +
 s"parent ${parent}\n" +
 s"author CTF user <me@example.com> ${now} +0000\n" +
@@ -62,7 +69,7 @@ val max = 100000000
           println(cmd)
           println("-----------------------")
           println("HASH: "+hash)
-          println(" GITHASH: "+ commitHash(cbode))
+          println("GITHASH: "+ commitHash(cbode))
           //System.exit(0)
       }
  }
@@ -85,12 +92,4 @@ Here is the gist of the code with the remnants of previous tries: https://gist.g
 In the end I committed by hand because there was some trouble with the endline character and sometimes it was needed at the end of the commit, sometimes not. Strange.
 
 
-
-
-
-
-
-
-
-
-
+Last updated: 2016, January. 
